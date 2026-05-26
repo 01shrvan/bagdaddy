@@ -42,7 +42,6 @@ export function LoginForm() {
 
   return (
     <div className="w-full max-w-sm px-6 flex flex-col items-center gap-8">
-      {/* logo */}
       <div className="flex flex-col items-center gap-2">
         <IconLogo size={36} className="text-foreground" />
         <span className="text-sm font-medium tracking-widest uppercase text-muted-foreground">
@@ -67,7 +66,7 @@ export function LoginForm() {
               className={cn(
                 "w-full bg-transparent border border-border rounded-lg px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50",
                 "focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary",
-                "transition-colors"
+                "transition-colors",
               )}
             />
             {error && <p className="text-xs text-destructive">{error}</p>}
@@ -78,14 +77,17 @@ export function LoginForm() {
             className={cn(
               "w-full py-3 rounded-lg text-sm font-medium transition-all",
               "bg-primary text-primary-foreground",
-              "hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
+              "hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed",
             )}
           >
             {isPending ? "sending..." : "continue"}
           </button>
         </form>
       ) : (
-        <form onSubmit={handleVerifyOtp} className="w-full flex flex-col items-center gap-4">
+        <form
+          onSubmit={handleVerifyOtp}
+          className="w-full flex flex-col items-center gap-4"
+        >
           <div className="flex flex-col items-center gap-1.5 w-full">
             <p className="text-xs text-muted-foreground">
               check your email — we sent a code to{" "}
@@ -105,14 +107,13 @@ export function LoginForm() {
                     className={cn(
                       "w-11 h-14 border border-border rounded-lg flex items-center justify-center text-lg font-mono text-foreground relative",
                       "transition-colors",
-                      slot.isActive && "border-primary ring-1 ring-primary"
+                      slot.isActive && "border-primary ring-1 ring-primary",
                     )}
                   >
-                    {slot.char ?? (
-                      slot.hasFakeCaret ? (
+                    {slot.char ??
+                      (slot.hasFakeCaret ? (
                         <div className="w-px h-5 bg-foreground animate-[blink_1s_step-end_infinite]" />
-                      ) : null
-                    )}
+                      ) : null)}
                   </div>
                 ))}
               </div>
@@ -127,7 +128,7 @@ export function LoginForm() {
             className={cn(
               "w-full py-3 rounded-lg text-sm font-medium transition-all",
               "bg-primary text-primary-foreground",
-              "hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
+              "hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed",
             )}
           >
             {isPending ? "verifying..." : "verify"}
@@ -135,7 +136,11 @@ export function LoginForm() {
 
           <button
             type="button"
-            onClick={() => { setStep("email"); setOtp(""); setError(""); }}
+            onClick={() => {
+              setStep("email");
+              setOtp("");
+              setError("");
+            }}
             className="text-xs text-muted-foreground hover:text-foreground transition-colors"
           >
             ← back
