@@ -12,14 +12,14 @@ import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from "@/components/ui/sheet";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Separator } from "@/components/ui/separator";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { AddInvoiceIcon, MoreHorizontalIcon, Delete01Icon, InvoiceIcon, Add01Icon, Delete02Icon } from "@hugeicons/core-free-icons";
+import { AddInvoiceIcon, MoreHorizontalIcon, Delete01Icon, InvoiceIcon, Add01Icon, Delete02Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 
 const STATUS_VARIANTS: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
   DRAFT: "outline", SENT: "secondary", PAID: "default", OVERDUE: "destructive",
@@ -35,7 +35,7 @@ const schema = z.object({
 });
 type FormData = z.infer<typeof schema>;
 
-function NewInvoiceDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+function NewInvoiceSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   const trpc = useTRPC();
   const qc = useQueryClient();
   const { data: clientsList } = useQuery(trpc.clients.list.queryOptions());
@@ -57,78 +57,85 @@ function NewInvoiceDialog({ open, onClose }: { open: boolean; onClose: () => voi
   }, 0);
 
   const create = useMutation(trpc.invoices.create.mutationOptions({ onSuccess: () => { qc.invalidateQueries(trpc.invoices.list.queryFilter()); onClose(); reset(); } }));
-
   const clientProjects = projectsList?.filter(r => r.project.clientId === selectedClientId && r.project.status === "ACTIVE") ?? [];
 
   return (
-    <Dialog open={open} onOpenChange={(v) => { if (!v) { onClose(); reset(); } }}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader><DialogTitle>New invoice</DialogTitle></DialogHeader>
-        <form onSubmit={handleSubmit((d) => create.mutate(d))} className="space-y-5">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <Label>Client</Label>
-              <Select onValueChange={(v) => { setValue("clientId", v); setValue("projectId", ""); }}>
-                <SelectTrigger><SelectValue placeholder="Select client" /></SelectTrigger>
-                <SelectContent>{clientsList?.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
-              </Select>
-              {errors.clientId && <p className="text-xs text-destructive">{errors.clientId.message}</p>}
-            </div>
-            <div className="space-y-1.5">
-              <Label>Project (optional)</Label>
-              <Select onValueChange={(v) => setValue("projectId", v)} disabled={!selectedClientId}>
-                <SelectTrigger><SelectValue placeholder="Select project" /></SelectTrigger>
-                <SelectContent>{clientProjects.map(r => <SelectItem key={r.project.id} value={r.project.id}>{r.project.name}</SelectItem>)}</SelectContent>
-              </Select>
-            </div>
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="dueDate">Due date</Label>
-            <Input id="dueDate" type="date" {...register("dueDate")} />
-          </div>
-
-          <Separator />
-
-          <div className="space-y-3">
-            <div className="grid grid-cols-[1fr_80px_100px_32px] gap-2 text-xs text-muted-foreground px-1">
-              <span>Description</span><span className="text-center">Qty</span><span className="text-right">Unit price</span><span />
-            </div>
-            {fields.map((field, i) => (
-              <div key={field.id} className="grid grid-cols-[1fr_80px_100px_32px] gap-2 items-center">
-                <Input placeholder="Service description" {...register(`items.${i}.description`)} />
-                <Input type="number" step="0.01" placeholder="1" className="text-center" {...register(`items.${i}.quantity`)} />
-                <Input type="number" step="0.01" placeholder="0.00" className="text-right" {...register(`items.${i}.unitPrice`)} />
-                <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => remove(i)} disabled={fields.length === 1}>
-                  <HugeiconsIcon icon={Delete02Icon} size={13} strokeWidth={2} />
-                </Button>
-              </div>
-            ))}
-            {errors.items && <p className="text-xs text-destructive">Add at least one item</p>}
-            <Button type="button" variant="outline" size="sm" onClick={() => append({ description: "", quantity: "1", unitPrice: "" })}>
-              <HugeiconsIcon icon={Add01Icon} size={13} strokeWidth={2} className="mr-1.5" />Add line
+    <Sheet open={open} onOpenChange={(v) => { if (!v) { onClose(); reset(); } }}>
+      <SheetContent className="flex flex-col gap-0 p-0 sm:max-w-xl">
+        <SheetHeader className="flex flex-row items-center justify-between px-6 py-4 border-b border-border">
+          <SheetTitle className="text-sm font-medium">New invoice</SheetTitle>
+          <SheetClose asChild>
+            <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground">
+              <HugeiconsIcon icon={Cancel01Icon} size={14} strokeWidth={2} />
             </Button>
-          </div>
+          </SheetClose>
+        </SheetHeader>
+        <form onSubmit={handleSubmit((d) => create.mutate(d))} className="flex flex-col flex-1 overflow-y-auto">
+          <div className="flex-1 px-6 py-5 space-y-5">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label>Client</Label>
+                <Select onValueChange={(v) => { setValue("clientId", v); setValue("projectId", ""); }}>
+                  <SelectTrigger><SelectValue placeholder="Select client" /></SelectTrigger>
+                  <SelectContent>{clientsList?.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
+                </Select>
+                {errors.clientId && <p className="text-xs text-destructive">{errors.clientId.message}</p>}
+              </div>
+              <div className="space-y-1.5">
+                <Label>Project (optional)</Label>
+                <Select onValueChange={(v) => setValue("projectId", v)} disabled={!selectedClientId}>
+                  <SelectTrigger><SelectValue placeholder="Select project" /></SelectTrigger>
+                  <SelectContent>{clientProjects.map(r => <SelectItem key={r.project.id} value={r.project.id}>{r.project.name}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="dueDate">Due date</Label>
+              <Input id="dueDate" type="date" {...register("dueDate")} />
+            </div>
 
-          <Separator />
+            <Separator />
 
-          <div className="flex justify-end">
-            <div className="text-sm space-y-1 text-right">
-              <div className="flex justify-between gap-12"><span className="text-muted-foreground">Total</span><span className="font-semibold">${subtotal.toFixed(2)}</span></div>
+            <div className="space-y-3">
+              <div className="grid grid-cols-[1fr_72px_96px_28px] gap-2 text-xs text-muted-foreground px-1">
+                <span>Description</span><span className="text-center">Qty</span><span className="text-right">Unit price</span><span />
+              </div>
+              {fields.map((field, i) => (
+                <div key={field.id} className="grid grid-cols-[1fr_72px_96px_28px] gap-2 items-center">
+                  <Input placeholder="Service description" {...register(`items.${i}.description`)} />
+                  <Input type="number" step="0.01" placeholder="1" className="text-center" {...register(`items.${i}.quantity`)} />
+                  <Input type="number" step="0.01" placeholder="0.00" className="text-right" {...register(`items.${i}.unitPrice`)} />
+                  <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive" onClick={() => remove(i)} disabled={fields.length === 1}>
+                    <HugeiconsIcon icon={Delete02Icon} size={13} strokeWidth={2} />
+                  </Button>
+                </div>
+              ))}
+              {errors.items && <p className="text-xs text-destructive">Add at least one item</p>}
+              <Button type="button" variant="outline" size="sm" onClick={() => append({ description: "", quantity: "1", unitPrice: "" })}>
+                <HugeiconsIcon icon={Add01Icon} size={13} strokeWidth={2} className="mr-1.5" />Add line
+              </Button>
+            </div>
+
+            <Separator />
+
+            <div className="flex justify-end">
+              <div className="text-sm space-y-1 text-right">
+                <div className="flex justify-between gap-12"><span className="text-muted-foreground">Total</span><span className="font-semibold">${subtotal.toFixed(2)}</span></div>
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="notes">Notes</Label>
+              <Textarea id="notes" placeholder="Payment terms, bank details..." className="resize-none" rows={2} {...register("notes")} />
             </div>
           </div>
-
-          <div className="space-y-1.5">
-            <Label htmlFor="notes">Notes</Label>
-            <Textarea id="notes" placeholder="Payment terms, bank details..." className="resize-none" rows={2} {...register("notes")} />
+          <div className="px-6 py-4 border-t border-border flex gap-2 justify-end">
+            <Button type="button" variant="outline" size="sm" onClick={() => { onClose(); reset(); }}>Cancel</Button>
+            <Button type="submit" size="sm" disabled={create.isPending}>{create.isPending ? "Creating..." : "Create invoice"}</Button>
           </div>
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => { onClose(); reset(); }}>Cancel</Button>
-            <Button type="submit" disabled={create.isPending}>{create.isPending ? "Creating..." : "Create invoice"}</Button>
-          </DialogFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 }
 
@@ -139,14 +146,14 @@ export function InvoicesView() {
   const updateStatus = useMutation(trpc.invoices.updateStatus.mutationOptions({ onSuccess: () => qc.invalidateQueries(trpc.invoices.list.queryFilter()) }));
   const deleteInvoice = useMutation(trpc.invoices.delete.mutationOptions({ onSuccess: () => qc.invalidateQueries(trpc.invoices.list.queryFilter()) }));
 
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   return (
     <div className="flex flex-col min-h-screen">
       <header className="h-14 border-b border-border flex items-center justify-between px-6">
         <h1 className="text-sm font-medium">Invoices</h1>
-        <Button size="sm" onClick={() => setDialogOpen(true)}>
+        <Button size="sm" onClick={() => setSheetOpen(true)}>
           <HugeiconsIcon icon={AddInvoiceIcon} size={14} strokeWidth={2} className="mr-1.5" />
           New invoice
         </Button>
@@ -161,7 +168,7 @@ export function InvoicesView() {
           <div className="flex flex-col items-center justify-center py-24 gap-3">
             <HugeiconsIcon icon={InvoiceIcon} size={32} strokeWidth={1.5} className="text-muted-foreground" />
             <p className="text-sm text-muted-foreground">No invoices yet.</p>
-            <Button size="sm" variant="outline" onClick={() => setDialogOpen(true)}>New invoice</Button>
+            <Button size="sm" variant="outline" onClick={() => setSheetOpen(true)}>New invoice</Button>
           </div>
         ) : (
           <div className="border border-border">
@@ -212,7 +219,7 @@ export function InvoicesView() {
         )}
       </div>
 
-      <NewInvoiceDialog open={dialogOpen} onClose={() => setDialogOpen(false)} />
+      <NewInvoiceSheet open={sheetOpen} onClose={() => setSheetOpen(false)} />
 
       <AlertDialog open={!!deleteId} onOpenChange={(v) => { if (!v) setDeleteId(null); }}>
         <AlertDialogContent>
