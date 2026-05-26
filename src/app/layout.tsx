@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("dark h-full antialiased", figtree.variable, ralewayHeading.variable)}
+      className={cn("dark h-full antialiased", "font-sans", figtree.variable, ralewayHeading.variable)}
     >
       <body className="min-h-full flex flex-col">
         <Providers>{children}</Providers>
