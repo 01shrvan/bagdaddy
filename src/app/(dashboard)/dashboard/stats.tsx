@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { invoices, projects, clients } from "@/lib/db/schema";
-import { eq, sum, count, or, and } from "drizzle-orm";
+import { eq, sum, count, or, and, sql, inArray } from "drizzle-orm";
 import { createClient } from "@/lib/supabase/server";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
@@ -30,16 +30,18 @@ export async function Stats() {
   const [[earned], [outstanding], [activeProjects], [totalClients]] = await Promise.all([
     db.select({ total: sum(invoices.totalAmount) })
       .from(invoices)
-      .where(and(eq(invoices.userId, userId), eq(invoices.status, "PAID"))),
+      .where(and(eq(invoices.userId, userId), sql`${invoices.status} = 'PAID'::invoice_status`)),
 
     db.select({ total: sum(invoices.totalAmount) })
       .from(invoices)
-      .where(and(eq(invoices.userId, userId), or(eq(invoices.status, "SENT"), eq(invoices.status, "OVERDUE")))),
+      .where(and(eq(invoices.userId, userId), sql`${invoices.status} IN ('SENT'::invoice_status, 'OVERDUE'::invoice_status)`)),
 
     db.select({ count: count() })
       .from(projects)
-      .innerJoin(clients, eq(projects.clientId, clients.id))
-      .where(and(eq(clients.userId, userId), eq(projects.status, "ACTIVE"))),
+      .where(and(
+        inArray(projects.clientId, db.select({ id: clients.id }).from(clients).where(eq(clients.userId, userId))),
+        sql`${projects.status} = 'ACTIVE'::project_status`,
+      )),
 
     db.select({ count: count() })
       .from(clients)
