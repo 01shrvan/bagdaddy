@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id
+  email     String   @unique
+  name      String?
+  clients   Client[]
+  createdAt DateTime @default(now())
+}
+
+model Client {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  name      String
+  email     String?
+  phone     String?
+  address   String?
+  projects  Project[]
+  invoices  Invoice[]
+  createdAt DateTime  @default(now())
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  clientId    String
+  client      Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  hourlyRate  Decimal       @db.Decimal(10, 2)
+  status      ProjectStatus @default(ACTIVE)
+  timeEntries TimeEntry[]
+  invoices    Invoice[]
+  createdAt   DateTime      @default(now())
+}
+
+model TimeEntry {
+  id          String   @id @default(cuid())
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  description String?
+  hours       Decimal  @db.Decimal(6, 2)
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+}
+
+model Invoice {
+  id            String        @id @default(cuid())
+  userId        String
+  clientId      String
+  client        Client        @relation(fields: [clientId], references: [id])
+  projectId     String?
+  project       Project?      @relation(fields: [projectId], references: [id])
+  invoiceNumber String        @unique
+  status        InvoiceStatus @default(DRAFT)
+  dueDate       DateTime?
+  totalAmount   Decimal       @db.Decimal(10, 2)
+  notes         String?
+  items         InvoiceItem[]
+  createdAt     DateTime      @default(now())
+  sentAt        DateTime?
+  paidAt        DateTime?
+}
+
+model InvoiceItem {
+  id          String  @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  description String
+  quantity    Decimal @db.Decimal(6, 2)
+  unitPrice   Decimal @db.Decimal(10, 2)
+  total       Decimal @db.Decimal(10, 2)
+}
+
+enum ProjectStatus {
+  ACTIVE
+  COMPLETED
+  ARCHIVED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+}
