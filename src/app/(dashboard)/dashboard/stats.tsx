@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { invoices, projects, clients } from "@/lib/db/schema";
-import { eq, sum, count, or, and, sql, inArray } from "drizzle-orm";
+import { eq, sum, count, and, sql, inArray } from "drizzle-orm";
 import { createClient } from "@/lib/supabase/server";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
@@ -20,59 +20,49 @@ function fmt(value: string | null) {
   }).format(n);
 }
 
-export async function Stats() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  const userId = user?.id;
+async function fetchStats(userId: string) {
+  const userClients = db.select({ id: clients.id }).from(clients).where(eq(clients.userId, userId));
 
-  if (!userId) return null;
-
-  const [[earned], [outstanding], [activeProjects], [totalClients]] = await Promise.all([
+  const [earned, outstanding, activeProjects, totalClients] = await Promise.all([
     db.select({ total: sum(invoices.totalAmount) })
       .from(invoices)
-      .where(and(eq(invoices.userId, userId), sql`${invoices.status} = 'PAID'::invoice_status`)),
+      .where(and(eq(invoices.userId, userId), sql`${invoices.status} = 'PAID'::invoice_status`))
+      .then(r => r[0].total),
 
     db.select({ total: sum(invoices.totalAmount) })
       .from(invoices)
-      .where(and(eq(invoices.userId, userId), sql`${invoices.status} IN ('SENT'::invoice_status, 'OVERDUE'::invoice_status)`)),
+      .where(and(eq(invoices.userId, userId), sql`${invoices.status} IN ('SENT'::invoice_status, 'OVERDUE'::invoice_status)`))
+      .then(r => r[0].total),
 
     db.select({ count: count() })
       .from(projects)
       .where(and(
-        inArray(projects.clientId, db.select({ id: clients.id }).from(clients).where(eq(clients.userId, userId))),
+        inArray(projects.clientId, userClients),
         sql`${projects.status} = 'ACTIVE'::project_status`,
-      )),
+      ))
+      .then(r => r[0].count),
 
     db.select({ count: count() })
       .from(clients)
-      .where(eq(clients.userId, userId)),
+      .where(eq(clients.userId, userId))
+      .then(r => r[0].count),
   ]);
 
+  return { earned, outstanding, activeProjects, totalClients };
+}
+
+export async function Stats() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const stats = await fetchStats(user.id);
+
   const cards = [
-    {
-      label: "Total earned",
-      value: fmt(earned.total),
-      icon: DollarSquareIcon,
-      sub: "from paid invoices",
-    },
-    {
-      label: "Outstanding",
-      value: fmt(outstanding.total),
-      icon: ChartIncreaseIcon,
-      sub: "sent & overdue",
-    },
-    {
-      label: "Active projects",
-      value: String(activeProjects.count),
-      icon: FolderOpenIcon,
-      sub: "in progress",
-    },
-    {
-      label: "Total clients",
-      value: String(totalClients.count),
-      icon: UserGroupIcon,
-      sub: "all time",
-    },
+    { label: "Total earned", value: fmt(stats.earned), icon: DollarSquareIcon, sub: "from paid invoices" },
+    { label: "Outstanding", value: fmt(stats.outstanding), icon: ChartIncreaseIcon, sub: "sent & overdue" },
+    { label: "Active projects", value: String(stats.activeProjects), icon: FolderOpenIcon, sub: "in progress" },
+    { label: "Total clients", value: String(stats.totalClients), icon: UserGroupIcon, sub: "all time" },
   ];
 
   return (
