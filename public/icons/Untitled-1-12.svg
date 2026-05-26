@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="a" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080">
+  <g>
+    <g>
+      <path d="M540,543.14c0-69.61-34.79-104.4-104.4-104.4,69.61,0,104.4-34.79,104.4-104.4,0,69.61,34.79,104.4,104.4,104.4-69.61,0-104.4,34.79-104.4,104.4Z" fill="none" stroke="#010101" stroke-miterlimit="10" stroke-width="1.71"/>
+      <path d="M540,543.14c0-69.61-34.79-104.4-104.4-104.4,69.61,0,104.4-34.79,104.4-104.4,0,69.61,34.79,104.4,104.4,104.4-69.61,0-104.4,34.79-104.4,104.4Z" fill="#010101" stroke="#010101" stroke-linejoin="round" stroke-width="3.99"/>
+    </g>
+    <polygon points="542 543.14 540 818.43 538 543.14 542 543.14 542 543.14" fill="#010101"/>
+  </g>
+  <ellipse cx="540" cy="543.57" rx="110.73" ry="23.62" fill="none" stroke="#010101" stroke-miterlimit="10" stroke-width="1.71"/>
+  <ellipse cx="540" cy="567.19" rx="110.73" ry="23.62" fill="none" stroke="#010101" stroke-miterlimit="10" stroke-width="1.71"/>
+  <ellipse cx="540" cy="590.81" rx="110.73" ry="23.62" fill="none" stroke="#010101" stroke-miterlimit="10" stroke-width="1.71"/>
+  <ellipse cx="540" cy="614.44" rx="110.73" ry="23.62" fill="none" stroke="#010101" stroke-miterlimit="10" stroke-width="1.71"/>
+  <ellipse cx="540" cy="638.06" rx="110.73" ry="23.62" fill="none" stroke="#010101" stroke-miterlimit="10" stroke-width="1.71"/>
+  <ellipse cx="540" cy="278.54" rx="77.3" ry="16.98" fill="none" stroke="#010101" stroke-miterlimit="10" stroke-width="1.51"/>
+</svg>
