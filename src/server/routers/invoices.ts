@@ -5,7 +5,7 @@ import { invoices, invoiceItems, clients, projects, users } from "@/lib/db/schem
 import { eq, and, inArray, desc } from "drizzle-orm";
 import { z } from "zod/v4";
 import { createId } from "@paralleldrive/cuid2";
-import { resend } from "@/lib/resend";
+import { sendEmail } from "@/lib/brevo";
 
 function fmt(date: Date | null | undefined) {
   if (!date) return null;
@@ -202,24 +202,32 @@ export const invoicesRouter = router({
       const pdfUrl = `${baseUrl}/api/invoice/${row.invoice.publicToken}/pdf`;
       const displayName = row.fromName ?? row.fromEmail.split("@")[0];
 
-      const { error } = await resend.emails.send({
-        from: `${displayName} via bagdaddy <onboarding@resend.dev>`,
-        to: [row.clientEmail],
-        subject: `Invoice ${row.invoice.invoiceNumber} from ${displayName}`,
-        html: buildEmailHtml({
-          invoiceNumber: row.invoice.invoiceNumber,
-          fromName: displayName,
-          clientName: row.clientName,
-          totalAmount: row.invoice.totalAmount,
-          dueDate: fmt(row.invoice.dueDate),
-          items,
-          notes: row.invoice.notes,
-          viewUrl,
-          pdfUrl,
-        }),
-      });
+      const fromEmail = process.env.BREVO_FROM_EMAIL ?? row.fromEmail;
+      const fromName = process.env.BREVO_FROM_NAME ?? displayName;
 
-      if (error) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: error.message });
+      try {
+        await sendEmail({
+          from: { name: `${fromName} via bagdaddy`, email: fromEmail },
+          to: [{ email: row.clientEmail, name: row.clientName }],
+          subject: `Invoice ${row.invoice.invoiceNumber} from ${displayName}`,
+          htmlContent: buildEmailHtml({
+            invoiceNumber: row.invoice.invoiceNumber,
+            fromName: displayName,
+            clientName: row.clientName,
+            totalAmount: row.invoice.totalAmount,
+            dueDate: fmt(row.invoice.dueDate),
+            items,
+            notes: row.invoice.notes,
+            viewUrl,
+            pdfUrl,
+          }),
+        });
+      } catch (err) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: err instanceof Error ? err.message : "Failed to send email",
+        });
+      }
 
       const [updated] = await db
         .update(invoices)
