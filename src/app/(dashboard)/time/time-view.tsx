@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ClockAddIcon, Delete01Icon, Clock01Icon } from "@hugeicons/core-free-icons";
 import { useTimeSheetParams } from "@/hooks/sheets/use-time-sheet";
+import { PageHeader } from "@/components/page-header";
 
 export function TimeView() {
   const trpc = useTRPC();
@@ -18,18 +19,15 @@ export function TimeView() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="h-14 border-b border-border flex items-center justify-between px-6">
-        <div className="flex items-center gap-4">
-          <h1 className="text-sm font-medium">Time</h1>
-          {totalHours > 0 && (
-            <span className="text-xs text-muted-foreground">{totalHours.toFixed(2)} hrs total</span>
-          )}
-        </div>
-        <Button size="sm" onClick={() => setParams({ timeCreate: true })}>
-          <HugeiconsIcon icon={ClockAddIcon} size={14} strokeWidth={2} className="mr-1.5" />
-          Log time
-        </Button>
-      </header>
+      <PageHeader
+        title={totalHours > 0 ? `Time · ${totalHours.toFixed(1)} hrs` : "Time"}
+        action={
+          <Button size="sm" onClick={() => setParams({ timeCreate: true })}>
+            <HugeiconsIcon icon={ClockAddIcon} size={14} strokeWidth={2} className="mr-1.5" />
+            Log time
+          </Button>
+        }
+      />
 
       <div className="flex-1 p-6">
         {isLoading ? (

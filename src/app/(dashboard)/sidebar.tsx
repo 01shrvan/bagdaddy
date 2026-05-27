@@ -65,6 +65,7 @@ export function AppSidebar() {
                       asChild
                       isActive={active}
                       tooltip={label}
+                      className={active ? "!bg-sidebar-primary !text-sidebar-primary-foreground" : ""}
                     >
                       <Link href={href}>
                         <HugeiconsIcon

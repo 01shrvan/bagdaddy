@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { HugeiconsIcon } from "@hugeicons/react";
 import { FolderAddIcon, MoreHorizontalIcon, Edit01Icon, Delete01Icon, FolderOpenIcon } from "@hugeicons/core-free-icons";
 import { useProjectSheetParams } from "@/hooks/sheets/use-project-sheet";
+import { PageHeader } from "@/components/page-header";
 
 const STATUS_LABELS = { ACTIVE: "Active", COMPLETED: "Completed", ARCHIVED: "Archived" } as const;
 const STATUS_VARIANTS = { ACTIVE: "default", COMPLETED: "secondary", ARCHIVED: "outline" } as const;
@@ -21,13 +22,15 @@ export function ProjectsView() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="h-14 border-b border-border flex items-center justify-between px-6">
-        <h1 className="text-sm font-medium">Projects</h1>
-        <Button size="sm" onClick={() => setParams({ projectCreate: true })}>
-          <HugeiconsIcon icon={FolderAddIcon} size={14} strokeWidth={2} className="mr-1.5" />
-          New project
-        </Button>
-      </header>
+      <PageHeader
+        title="Projects"
+        action={
+          <Button size="sm" onClick={() => setParams({ projectCreate: true })}>
+            <HugeiconsIcon icon={FolderAddIcon} size={14} strokeWidth={2} className="mr-1.5" />
+            New project
+          </Button>
+        }
+      />
 
       <div className="flex-1 p-6">
         {isLoading ? (

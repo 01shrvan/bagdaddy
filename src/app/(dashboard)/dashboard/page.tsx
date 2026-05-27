@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { Stats } from "./stats";
+import { PageHeader } from "@/components/page-header";
 
 function StatsSkeleton() {
   return (
@@ -14,9 +15,7 @@ function StatsSkeleton() {
 export default function DashboardPage() {
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="h-14 border-b border-border flex items-center px-6">
-        <h1 className="text-sm font-medium text-foreground">Overview</h1>
-      </header>
+      <PageHeader title="Overview" />
 
       <div className="flex-1 p-6 space-y-8">
         <Suspense fallback={<StatsSkeleton />}>

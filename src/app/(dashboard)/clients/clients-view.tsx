@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { HugeiconsIcon } from "@hugeicons/react";
 import { UserAdd01Icon, MoreHorizontalIcon, Edit01Icon, Delete01Icon, UserGroupIcon } from "@hugeicons/core-free-icons";
 import { useClientSheetParams } from "@/hooks/sheets/use-client-sheet";
+import { PageHeader } from "@/components/page-header";
 
 export function ClientsView() {
   const trpc = useTRPC();
@@ -17,13 +18,15 @@ export function ClientsView() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="h-14 border-b border-border flex items-center justify-between px-6">
-        <h1 className="text-sm font-medium">Clients</h1>
-        <Button size="sm" onClick={() => setParams({ clientCreate: true })}>
-          <HugeiconsIcon icon={UserAdd01Icon} size={14} strokeWidth={2} className="mr-1.5" />
-          New client
-        </Button>
-      </header>
+      <PageHeader
+        title="Clients"
+        action={
+          <Button size="sm" onClick={() => setParams({ clientCreate: true })}>
+            <HugeiconsIcon icon={UserAdd01Icon} size={14} strokeWidth={2} className="mr-1.5" />
+            New client
+          </Button>
+        }
+      />
 
       <div className="flex-1 p-6">
         {isLoading ? (

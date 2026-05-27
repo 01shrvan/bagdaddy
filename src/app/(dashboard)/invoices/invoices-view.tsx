@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { HugeiconsIcon } from "@hugeicons/react";
 import { AddInvoiceIcon, MoreHorizontalIcon, Delete01Icon, InvoiceIcon } from "@hugeicons/core-free-icons";
 import { useInvoiceSheetParams } from "@/hooks/sheets/use-invoice-sheet";
+import { PageHeader } from "@/components/page-header";
 
 const STATUS_VARIANTS: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
   DRAFT: "outline", SENT: "secondary", PAID: "default", OVERDUE: "destructive",
@@ -26,13 +27,15 @@ export function InvoicesView() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="h-14 border-b border-border flex items-center justify-between px-6">
-        <h1 className="text-sm font-medium">Invoices</h1>
-        <Button size="sm" onClick={() => setParams({ invoiceCreate: true })}>
-          <HugeiconsIcon icon={AddInvoiceIcon} size={14} strokeWidth={2} className="mr-1.5" />
-          New invoice
-        </Button>
-      </header>
+      <PageHeader
+        title="Invoices"
+        action={
+          <Button size="sm" onClick={() => setParams({ invoiceCreate: true })}>
+            <HugeiconsIcon icon={AddInvoiceIcon} size={14} strokeWidth={2} className="mr-1.5" />
+            New invoice
+          </Button>
+        }
+      />
 
       <div className="flex-1 p-6">
         {isLoading ? (
