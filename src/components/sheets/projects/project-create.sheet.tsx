@@ -46,13 +46,14 @@ export function ProjectCreateSheet() {
   return (
     <SheetComponent.Sheet
       open={isOpen}
-      onOpenChange={(nextOpen) => {
-        if (!nextOpen) { setParams({ projectCreate: null }); reset(); }
-      }}
+      onOpenChange={(nextOpen) => { if (!nextOpen) { setParams({ projectCreate: null }); reset(); } }}
     >
       <SheetComponent.SheetContent showCloseButton={false}>
         <SheetComponent.SheetHeader className="flex flex-row items-center justify-between">
-          <SheetComponent.SheetTitle>New project</SheetComponent.SheetTitle>
+          <div>
+            <SheetComponent.SheetTitle>New project</SheetComponent.SheetTitle>
+            <SheetComponent.SheetDescription>Create a project under an existing client.</SheetComponent.SheetDescription>
+          </div>
           <SheetComponent.SheetClose asChild>
             <Button variant="ghost" className="m-0 size-auto p-0 hover:bg-transparent" size="icon">
               <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
@@ -62,13 +63,17 @@ export function ProjectCreateSheet() {
         </SheetComponent.SheetHeader>
 
         <form onSubmit={handleSubmit((d) => create.mutate(d))} className="flex h-full flex-col">
-          <div className="space-y-4 p-4">
+          <div className="flex-1 overflow-y-auto space-y-4 p-4">
             <div className="space-y-1.5">
               <Label>Client</Label>
               <Select onValueChange={(v) => setValue("clientId", v)}>
-                <SelectTrigger><SelectValue placeholder="Select client" /></SelectTrigger>
-                <SelectContent>
-                  {clientsList?.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
+                <SelectTrigger>
+                  <SelectValue placeholder="Select client" />
+                </SelectTrigger>
+                <SelectContent position="popper">
+                  {clientsList?.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               {errors.clientId && <p className="text-xs text-destructive">{errors.clientId.message}</p>}
@@ -84,7 +89,7 @@ export function ProjectCreateSheet() {
               {errors.hourlyRate && <p className="text-xs text-destructive">{errors.hourlyRate.message}</p>}
             </div>
           </div>
-          <div className="mt-auto p-4">
+          <div className="shrink-0 border-t p-4">
             <div className="grid grid-cols-2 gap-x-2">
               <SheetComponent.SheetClose asChild>
                 <Button type="button" variant="outline" size="lg" disabled={create.isPending}>Cancel</Button>

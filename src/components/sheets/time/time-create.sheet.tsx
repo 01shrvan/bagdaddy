@@ -50,7 +50,10 @@ export function TimeCreateSheet() {
     >
       <SheetComponent.SheetContent showCloseButton={false}>
         <SheetComponent.SheetHeader className="flex flex-row items-center justify-between">
-          <SheetComponent.SheetTitle>Log time</SheetComponent.SheetTitle>
+          <div>
+            <SheetComponent.SheetTitle>Log time</SheetComponent.SheetTitle>
+            <SheetComponent.SheetDescription>Record hours against an active project.</SheetComponent.SheetDescription>
+          </div>
           <SheetComponent.SheetClose asChild>
             <Button variant="ghost" className="m-0 size-auto p-0 hover:bg-transparent" size="icon">
               <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
@@ -60,12 +63,14 @@ export function TimeCreateSheet() {
         </SheetComponent.SheetHeader>
 
         <form onSubmit={handleSubmit((d) => create.mutate(d))} className="flex h-full flex-col">
-          <div className="space-y-4 p-4">
+          <div className="flex-1 overflow-y-auto space-y-4 p-4">
             <div className="space-y-1.5">
               <Label>Project</Label>
               <Select onValueChange={(v) => setValue("projectId", v)}>
-                <SelectTrigger><SelectValue placeholder="Select project" /></SelectTrigger>
-                <SelectContent>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select project" />
+                </SelectTrigger>
+                <SelectContent position="popper">
                   {projects?.filter((r) => r.project.status === "ACTIVE").map((r) => (
                     <SelectItem key={r.project.id} value={r.project.id}>
                       {r.project.name} — {r.clientName}
@@ -91,7 +96,7 @@ export function TimeCreateSheet() {
               <Input id="tc-desc" placeholder="What did you work on?" {...register("description")} />
             </div>
           </div>
-          <div className="mt-auto p-4">
+          <div className="shrink-0 border-t p-4">
             <div className="grid grid-cols-2 gap-x-2">
               <SheetComponent.SheetClose asChild>
                 <Button type="button" variant="outline" size="lg" disabled={create.isPending}>Cancel</Button>

@@ -23,7 +23,10 @@ const schema = z.object({
 });
 type FormData = z.infer<typeof schema>;
 
-type ProjectRow = { project: { id: string; name: string; hourlyRate: string; status: "ACTIVE" | "COMPLETED" | "ARCHIVED"; clientId: string; description: string | null; createdAt: Date }; clientName: string };
+type ProjectRow = {
+  project: { id: string; name: string; hourlyRate: string; status: "ACTIVE" | "COMPLETED" | "ARCHIVED"; clientId: string; description: string | null; createdAt: Date };
+  clientName: string;
+};
 
 export function ProjectEditSheet() {
   const { projectEdit, setParams } = useProjectSheetParams();
@@ -61,7 +64,10 @@ export function ProjectEditSheet() {
     >
       <SheetComponent.SheetContent showCloseButton={false}>
         <SheetComponent.SheetHeader className="flex flex-row items-center justify-between">
-          <SheetComponent.SheetTitle>Edit project</SheetComponent.SheetTitle>
+          <div>
+            <SheetComponent.SheetTitle>Edit project</SheetComponent.SheetTitle>
+            <SheetComponent.SheetDescription>Update project details and status.</SheetComponent.SheetDescription>
+          </div>
           <SheetComponent.SheetClose asChild>
             <Button variant="ghost" className="m-0 size-auto p-0 hover:bg-transparent" size="icon">
               <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
@@ -74,7 +80,8 @@ export function ProjectEditSheet() {
           <div className="space-y-6 p-4">
             {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="space-y-1.5">
-                <Skeleton className="h-4 w-20" /><Skeleton className="h-9 w-full" />
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-9 w-full" />
               </div>
             ))}
           </div>
@@ -83,7 +90,7 @@ export function ProjectEditSheet() {
             onSubmit={handleSubmit((d) => { if (projectEdit) update.mutate({ id: projectEdit, ...d }); })}
             className="flex h-full flex-col"
           >
-            <div className="space-y-4 p-4">
+            <div className="flex-1 overflow-y-auto space-y-4 p-4">
               <div className="space-y-1.5">
                 <Label htmlFor="pe-name">Project name</Label>
                 <Input id="pe-name" placeholder="Website redesign" {...register("name")} />
@@ -97,8 +104,10 @@ export function ProjectEditSheet() {
               <div className="space-y-1.5">
                 <Label>Status</Label>
                 <Select onValueChange={(v) => setValue("status", v as any)} value={watch("status")}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent position="popper">
                     <SelectItem value="ACTIVE">Active</SelectItem>
                     <SelectItem value="COMPLETED">Completed</SelectItem>
                     <SelectItem value="ARCHIVED">Archived</SelectItem>
@@ -106,7 +115,7 @@ export function ProjectEditSheet() {
                 </Select>
               </div>
             </div>
-            <div className="mt-auto p-4">
+            <div className="shrink-0 border-t p-4">
               <div className="grid grid-cols-2 gap-x-2">
                 <SheetComponent.SheetClose asChild>
                   <Button type="button" variant="outline" size="lg" disabled={update.isPending}>Cancel</Button>

@@ -9,8 +9,6 @@ export default function DashboardPage() {
   return (
     <Container>
       <main className="space-y-8">
-
-        {/* ── Overview header ── */}
         <section className="space-y-1">
           <h1 className="font-semibold text-3xl tracking-tight">Overview</h1>
           <p className="text-muted-foreground text-sm">
@@ -18,12 +16,10 @@ export default function DashboardPage() {
           </p>
         </section>
 
-        {/* ── Stats ── */}
         <Suspense fallback={<StatsSkeleton />}>
           <Stats />
         </Suspense>
 
-        {/* ── Recent activity ── */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <section className="border">
             <div className="flex items-center justify-between px-5 py-3.5 border-b">
@@ -49,7 +45,6 @@ export default function DashboardPage() {
             </Suspense>
           </section>
         </div>
-
       </main>
     </Container>
   );

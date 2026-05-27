@@ -3,7 +3,7 @@
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -29,7 +29,6 @@ export function ClientEditSheet() {
   const trpc = useTRPC();
   const qc = useQueryClient();
 
-  // Look up from list cache
   const allClients = qc.getQueryData<{ id: string; name: string; email: string | null; phone: string | null; address: string | null; createdAt: Date }[]>(
     trpc.clients.list.queryOptions().queryKey,
   );
@@ -42,12 +41,7 @@ export function ClientEditSheet() {
 
   useEffect(() => {
     if (client) {
-      reset({
-        name: client.name,
-        email: client.email ?? "",
-        phone: client.phone ?? "",
-        address: client.address ?? "",
-      });
+      reset({ name: client.name, email: client.email ?? "", phone: client.phone ?? "", address: client.address ?? "" });
     }
   }, [client, reset]);
 
@@ -60,18 +54,17 @@ export function ClientEditSheet() {
     }),
   );
 
-  const isLoading = isOpen && !client;
-
   return (
     <SheetComponent.Sheet
       open={isOpen}
-      onOpenChange={(nextOpen) => {
-        if (!nextOpen) setParams({ clientEdit: null });
-      }}
+      onOpenChange={(nextOpen) => { if (!nextOpen) setParams({ clientEdit: null }); }}
     >
       <SheetComponent.SheetContent showCloseButton={false}>
         <SheetComponent.SheetHeader className="flex flex-row items-center justify-between">
-          <SheetComponent.SheetTitle>Edit client</SheetComponent.SheetTitle>
+          <div>
+            <SheetComponent.SheetTitle>Edit client</SheetComponent.SheetTitle>
+            <SheetComponent.SheetDescription>Update this client's contact details.</SheetComponent.SheetDescription>
+          </div>
           <SheetComponent.SheetClose asChild>
             <Button variant="ghost" className="m-0 size-auto p-0 hover:bg-transparent" size="icon">
               <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
@@ -80,7 +73,7 @@ export function ClientEditSheet() {
           </SheetComponent.SheetClose>
         </SheetComponent.SheetHeader>
 
-        {isLoading ? (
+        {isOpen && !client ? (
           <div className="space-y-6 p-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="space-y-1.5">
@@ -94,7 +87,7 @@ export function ClientEditSheet() {
             onSubmit={handleSubmit((d) => { if (clientEdit) update.mutate({ id: clientEdit, ...d }); })}
             className="flex h-full flex-col"
           >
-            <div className="space-y-4 p-4">
+            <div className="flex-1 overflow-y-auto space-y-4 p-4">
               <div className="space-y-1.5">
                 <Label htmlFor="ce-name">Name</Label>
                 <Input id="ce-name" placeholder="Acme Corp" {...register("name")} />
@@ -114,7 +107,7 @@ export function ClientEditSheet() {
                 <Input id="ce-address" placeholder="123 Main St" {...register("address")} />
               </div>
             </div>
-            <div className="mt-auto p-4">
+            <div className="shrink-0 border-t p-4">
               <div className="grid grid-cols-2 gap-x-2">
                 <SheetComponent.SheetClose asChild>
                   <Button type="button" variant="outline" size="lg" disabled={update.isPending}>Cancel</Button>

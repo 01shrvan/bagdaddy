@@ -29,16 +29,11 @@ export function AppSidebar() {
 
   return (
     <SidebarComponent.Sidebar collapsible="icon" className="border-r-0">
-
-      {/* ── Header ── */}
       <SidebarComponent.SidebarHeader className="flex flex-row items-center justify-between">
         {state === "collapsed" ? (
           <SidebarComponent.SidebarMenu>
             <SidebarComponent.SidebarMenuItem>
-              <SidebarComponent.SidebarMenuButton
-                className="rounded"
-                onClick={toggleSidebar}
-              >
+              <SidebarComponent.SidebarMenuButton className="rounded" onClick={toggleSidebar}>
                 <IconLogo size={16} className="shrink-0" />
               </SidebarComponent.SidebarMenuButton>
             </SidebarComponent.SidebarMenuItem>
@@ -49,7 +44,6 @@ export function AppSidebar() {
             <span className="text-sm font-semibold tracking-tight">bagdaddy</span>
           </div>
         )}
-
         {state !== "collapsed" && (
           <SidebarComponent.SidebarTrigger className="rounded" />
         )}
@@ -57,7 +51,6 @@ export function AppSidebar() {
 
       <div className="w-full border-b" />
 
-      {/* ── Nav ── */}
       <SidebarComponent.SidebarContent>
         <SidebarComponent.SidebarGroup>
           <SidebarComponent.SidebarGroupLabel>Menu</SidebarComponent.SidebarGroupLabel>
@@ -93,12 +86,10 @@ export function AppSidebar() {
         </SidebarComponent.SidebarGroup>
       </SidebarComponent.SidebarContent>
 
-      {/* ── Footer ── */}
       <SidebarComponent.SidebarFooter>
         <div className="w-full border-b" />
         <NavUser />
       </SidebarComponent.SidebarFooter>
-
     </SidebarComponent.Sidebar>
   );
 }

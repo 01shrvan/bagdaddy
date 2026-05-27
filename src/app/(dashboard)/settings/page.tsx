@@ -21,7 +21,6 @@ export default function SettingsPage() {
   const [user, setUser] = useState<UserInfo | null>(null);
   const [name, setName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
-
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [confirmEmail, setConfirmEmail] = useState("");
 
@@ -78,8 +77,6 @@ export default function SettingsPage() {
   return (
     <Container>
       <main className="space-y-8">
-
-        {/* ── Heading ── */}
         <div className="space-y-1">
           <h1 className="font-semibold text-3xl tracking-tight">Settings</h1>
           <p className="text-muted-foreground text-sm">
@@ -87,7 +84,6 @@ export default function SettingsPage() {
           </p>
         </div>
 
-        {/* ── Profile ── */}
         <div className="border">
           <div className="px-6 py-5 border-b">
             <h2 className="text-base font-semibold">Profile</h2>
@@ -130,7 +126,6 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {/* ── Danger zone ── */}
         <div className="border border-destructive/25">
           <div className="px-6 py-5 border-b border-destructive/25">
             <h2 className="text-base font-semibold text-destructive">Danger zone</h2>
@@ -140,16 +135,11 @@ export default function SettingsPage() {
             </p>
           </div>
           <div className="px-6 py-4 flex justify-end">
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => setDeleteOpen(true)}
-            >
+            <Button variant="destructive" size="sm" onClick={() => setDeleteOpen(true)}>
               Delete account permanently
             </Button>
           </div>
         </div>
-
       </main>
 
       <DeleteAccountSheet

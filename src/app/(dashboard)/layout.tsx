@@ -8,7 +8,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        {/* Mobile-only top bar — sidebar trigger + logo */}
         <div className="flex h-12 shrink-0 items-center gap-3 border-b px-4 md:hidden">
           <SidebarTrigger className="rounded" />
           <div className="flex items-center gap-2">

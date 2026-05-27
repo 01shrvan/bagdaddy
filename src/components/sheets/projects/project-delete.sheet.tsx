@@ -1,6 +1,6 @@
 "use client";
 
-import { Cancel01Icon } from "@hugeicons/core-free-icons";
+import { Cancel01Icon, Alert02Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -32,7 +32,7 @@ export function ProjectDeleteSheet() {
         <SheetComponent.SheetHeader className="flex flex-row items-center justify-between">
           <div>
             <SheetComponent.SheetTitle>Delete project</SheetComponent.SheetTitle>
-            <SheetComponent.SheetDescription>All time entries for this project will also be permanently deleted.</SheetComponent.SheetDescription>
+            <SheetComponent.SheetDescription>This action cannot be undone.</SheetComponent.SheetDescription>
           </div>
           <SheetComponent.SheetClose asChild>
             <Button variant="ghost" className="m-0 size-auto p-0 hover:bg-transparent" size="icon">
@@ -41,8 +41,20 @@ export function ProjectDeleteSheet() {
             </Button>
           </SheetComponent.SheetClose>
         </SheetComponent.SheetHeader>
-        <form onSubmit={(e) => { e.preventDefault(); if (projectDelete) del.mutate({ id: projectDelete }); }} className="flex h-full flex-col">
-          <div className="mt-auto p-4">
+
+        <form
+          onSubmit={(e) => { e.preventDefault(); if (projectDelete) del.mutate({ id: projectDelete }); }}
+          className="flex h-full flex-col"
+        >
+          <div className="flex-1 p-4">
+            <div className="flex gap-3 border border-destructive/20 p-4">
+              <HugeiconsIcon icon={Alert02Icon} size={16} strokeWidth={1.5} className="text-destructive shrink-0 mt-0.5" />
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Deleting this project will permanently remove all associated time entries. This cannot be reversed.
+              </p>
+            </div>
+          </div>
+          <div className="shrink-0 border-t p-4">
             <div className="grid grid-cols-2 gap-x-2">
               <SheetComponent.SheetClose asChild>
                 <Button type="button" variant="outline" size="lg" disabled={del.isPending}>Cancel</Button>

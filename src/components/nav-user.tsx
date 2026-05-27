@@ -33,6 +33,7 @@ export function NavUser() {
 
   useEffect(() => {
     const supabase = createClient();
+
     supabase.auth.getUser().then(({ data }) => {
       if (data.user) {
         const email = data.user.email ?? "";
@@ -44,6 +45,22 @@ export function NavUser() {
         setUser({ email, name });
       }
     });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        const email = session.user.email ?? "";
+        const name =
+          session.user.user_metadata?.full_name ??
+          session.user.user_metadata?.name ??
+          email.split("@")[0] ??
+          "User";
+        setUser({ email, name });
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   async function handleSignOut() {
