@@ -4,6 +4,7 @@ import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { TRPCProvider } from "@/lib/trpc/client";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import SuperJSON from "superjson";
 import type { AppRouter } from "@/server/routers";
 
@@ -29,7 +30,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <TRPCProvider queryClient={queryClient} trpcClient={trpcClient}>
       <QueryClientProvider client={queryClient}>
-        {children}
+        <TooltipProvider>
+          {children}
+        </TooltipProvider>
       </QueryClientProvider>
     </TRPCProvider>
   );

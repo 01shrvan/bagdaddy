@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   DashboardSquare01Icon,
@@ -9,11 +9,22 @@ import {
   FolderOpenIcon,
   Clock01Icon,
   InvoiceIcon,
-  Logout01Icon,
 } from "@hugeicons/core-free-icons";
 import { IconLogo } from "@/components/icons";
-import { createClient } from "@/lib/supabase/client";
-import { cn } from "@/lib/utils";
+import { NavUser } from "@/components/nav-user";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarSeparator,
+} from "@/components/ui/sidebar";
 
 const nav = [
   { href: "/dashboard", label: "Dashboard", icon: DashboardSquare01Icon },
@@ -23,60 +34,66 @@ const nav = [
   { href: "/invoices", label: "Invoices", icon: InvoiceIcon },
 ];
 
-export function Sidebar() {
+export function AppSidebar() {
   const pathname = usePathname();
-  const router = useRouter();
-
-  async function handleSignOut() {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push("/login");
-  }
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-50 flex w-56 flex-col bg-sidebar border-r border-sidebar-border">
-      <div className="flex h-14 items-center gap-2.5 px-4 border-b border-sidebar-border">
-        <IconLogo size={22} className="text-sidebar-foreground shrink-0" />
-        <span className="text-sm font-semibold tracking-tight text-sidebar-foreground">
-          bagdaddy
-        </span>
-      </div>
+    <Sidebar collapsible="icon">
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg" asChild>
+              <Link href="/dashboard">
+                <div className="flex h-8 w-8 items-center justify-center">
+                  <IconLogo size={20} className="shrink-0" />
+                </div>
+                <span className="text-sm font-semibold tracking-tight">bagdaddy</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
 
-      <nav className="flex-1 overflow-y-auto px-2 py-3 space-y-0.5">
-        {nav.map(({ href, label, icon }) => {
-          const active = pathname === href || (href !== "/dashboard" && pathname.startsWith(href));
-          return (
-            <Link
-              key={href}
-              href={href}
-              className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
-                active
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground"
-              )}
-            >
-              <HugeiconsIcon
-                icon={icon}
-                size={16}
-                strokeWidth={active ? 2 : 1.5}
-                className="shrink-0"
-              />
-              {label}
-            </Link>
-          );
-        })}
-      </nav>
+      <SidebarSeparator />
 
-      <div className="border-t border-sidebar-border p-2">
-        <button
-          onClick={handleSignOut}
-          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-sidebar-foreground/60 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground transition-colors"
-        >
-          <HugeiconsIcon icon={Logout01Icon} size={16} strokeWidth={1.5} className="shrink-0" />
-          Sign out
-        </button>
-      </div>
-    </aside>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Menu</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {nav.map(({ href, label, icon }) => {
+                const active =
+                  pathname === href ||
+                  (href !== "/dashboard" && pathname.startsWith(href));
+                return (
+                  <SidebarMenuItem key={href}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={active}
+                      tooltip={label}
+                    >
+                      <Link href={href}>
+                        <HugeiconsIcon
+                          icon={icon}
+                          size={16}
+                          strokeWidth={active ? 2 : 1.5}
+                        />
+                        <span>{label}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+
+      <SidebarSeparator />
+
+      <SidebarFooter>
+        <NavUser />
+      </SidebarFooter>
+    </Sidebar>
   );
 }

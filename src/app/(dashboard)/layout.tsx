@@ -1,14 +1,15 @@
 import { GlobalSheets } from "@/components/sheets/global-sheets";
-import { Sidebar } from "./sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "./sidebar";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen bg-background">
-      <Sidebar />
-      <main className="ml-56 flex-1 min-w-0">
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
         {children}
-      </main>
+      </SidebarInset>
       <GlobalSheets />
-    </div>
+    </SidebarProvider>
   );
 }
