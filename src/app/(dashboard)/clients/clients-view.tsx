@@ -4,12 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/lib/trpc/client";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { UserAdd01Icon, MoreHorizontalIcon, Edit01Icon, Delete01Icon, UserGroupIcon } from "@hugeicons/core-free-icons";
 import { useClientSheetParams } from "@/hooks/sheets/use-client-sheet";
-import { PageHeader } from "@/components/page-header";
+import { Container } from "@/components/container";
 
 export function ClientsView() {
   const trpc = useTRPC();
@@ -17,30 +18,42 @@ export function ClientsView() {
   const { setParams } = useClientSheetParams();
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <PageHeader
-        title="Clients"
-        action={
+    <Container>
+      <main className="space-y-6">
+        <div className="flex items-start justify-between gap-4">
+          <div className="space-y-1">
+            <h1 className="font-semibold text-3xl tracking-tight">Clients</h1>
+            <p className="text-muted-foreground text-sm">
+              Manage your client list and contact details.
+            </p>
+          </div>
           <Button size="sm" onClick={() => setParams({ clientCreate: true })}>
             <HugeiconsIcon icon={UserAdd01Icon} size={14} strokeWidth={2} className="mr-1.5" />
             New client
           </Button>
-        }
-      />
+        </div>
 
-      <div className="flex-1 p-6">
         {isLoading ? (
           <div className="space-y-2">
-            {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton key={i} className="h-12 w-full" />
+            ))}
           </div>
         ) : !clientsList?.length ? (
-          <div className="flex flex-col items-center justify-center py-24 gap-3">
-            <HugeiconsIcon icon={UserGroupIcon} size={32} strokeWidth={1.5} className="text-muted-foreground" />
-            <p className="text-sm text-muted-foreground">No clients yet. Add your first one.</p>
-            <Button size="sm" variant="outline" onClick={() => setParams({ clientCreate: true })}>Add client</Button>
+          <div className="flex flex-col items-center justify-center border py-24 gap-4">
+            <div className="flex h-10 w-10 items-center justify-center border">
+              <HugeiconsIcon icon={UserGroupIcon} size={18} strokeWidth={1.5} className="text-muted-foreground" />
+            </div>
+            <div className="text-center space-y-1">
+              <p className="text-sm font-medium">No clients yet</p>
+              <p className="text-xs text-muted-foreground">Add your first client to get started.</p>
+            </div>
+            <Button size="sm" variant="outline" onClick={() => setParams({ clientCreate: true })}>
+              Add client
+            </Button>
           </div>
         ) : (
-          <div className="border border-border">
+          <div className="border">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -65,10 +78,15 @@ export function ClientsView() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => setParams({ clientEdit: client.id })}>
-                            <HugeiconsIcon icon={Edit01Icon} size={13} strokeWidth={2} className="mr-2" />Edit
+                            <HugeiconsIcon icon={Edit01Icon} size={13} strokeWidth={2} className="mr-2" />
+                            Edit
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-destructive" onClick={() => setParams({ clientDelete: client.id })}>
-                            <HugeiconsIcon icon={Delete01Icon} size={13} strokeWidth={2} className="mr-2" />Delete
+                          <DropdownMenuItem
+                            className="text-destructive"
+                            onClick={() => setParams({ clientDelete: client.id })}
+                          >
+                            <HugeiconsIcon icon={Delete01Icon} size={13} strokeWidth={2} className="mr-2" />
+                            Delete
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -79,7 +97,7 @@ export function ClientsView() {
             </Table>
           </div>
         )}
-      </div>
-    </div>
+      </main>
+    </Container>
   );
 }

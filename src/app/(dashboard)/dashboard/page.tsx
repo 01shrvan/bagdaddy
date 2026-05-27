@@ -1,53 +1,56 @@
 import { Suspense } from "react";
-import { Stats } from "./stats";
-import { PageHeader } from "@/components/page-header";
-
-function StatsSkeleton() {
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {Array.from({ length: 4 }).map((_, i) => (
-        <div key={i} className="rounded-lg border border-border bg-card p-5 h-28 animate-pulse" />
-      ))}
-    </div>
-  );
-}
+import Link from "next/link";
+import { Stats, StatsSkeleton } from "./stats";
+import { Container } from "@/components/container";
+import { RecentInvoices, RecentInvoicesSkeleton } from "./recent-invoices";
+import { ActiveProjects, ActiveProjectsSkeleton } from "./active-projects";
 
 export default function DashboardPage() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <PageHeader title="Overview" />
+    <Container>
+      <main className="space-y-8">
 
-      <div className="flex-1 p-6 space-y-8">
+        {/* ── Overview header ── */}
+        <section className="space-y-1">
+          <h1 className="font-semibold text-3xl tracking-tight">Overview</h1>
+          <p className="text-muted-foreground text-sm">
+            A snapshot of your freelance business — earnings, projects, and clients.
+          </p>
+        </section>
+
+        {/* ── Stats ── */}
         <Suspense fallback={<StatsSkeleton />}>
           <Stats />
         </Suspense>
 
+        {/* ── Recent activity ── */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="rounded-lg border border-border bg-card">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-              <h2 className="text-sm font-medium text-foreground">Recent invoices</h2>
-              <a href="/invoices" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+          <section className="border">
+            <div className="flex items-center justify-between px-5 py-3.5 border-b">
+              <h2 className="text-sm font-medium">Recent invoices</h2>
+              <Link href="/invoices" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
                 View all
-              </a>
+              </Link>
             </div>
-            <div className="px-5 py-10 flex items-center justify-center">
-              <p className="text-sm text-muted-foreground">No invoices yet</p>
-            </div>
-          </div>
+            <Suspense fallback={<RecentInvoicesSkeleton />}>
+              <RecentInvoices />
+            </Suspense>
+          </section>
 
-          <div className="rounded-lg border border-border bg-card">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-              <h2 className="text-sm font-medium text-foreground">Active projects</h2>
-              <a href="/projects" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+          <section className="border">
+            <div className="flex items-center justify-between px-5 py-3.5 border-b">
+              <h2 className="text-sm font-medium">Active projects</h2>
+              <Link href="/projects" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
                 View all
-              </a>
+              </Link>
             </div>
-            <div className="px-5 py-10 flex items-center justify-center">
-              <p className="text-sm text-muted-foreground">No projects yet</p>
-            </div>
-          </div>
+            <Suspense fallback={<ActiveProjectsSkeleton />}>
+              <ActiveProjects />
+            </Suspense>
+          </section>
         </div>
-      </div>
-    </div>
+
+      </main>
+    </Container>
   );
 }

@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Logout01Icon, UserCircleIcon, ArrowUpDownIcon } from "@hugeicons/core-free-icons";
+import { LoginSquare01Icon, UserCircleIcon, ArrowUpDownIcon } from "@hugeicons/core-free-icons";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -20,11 +21,12 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { createClient } from "@/lib/supabase/client";
+import { cn } from "@/lib/utils";
 
 type UserInfo = { email: string; name: string };
 
 export function NavUser() {
-  const { isMobile } = useSidebar();
+  const { state } = useSidebar();
   const router = useRouter();
   const [user, setUser] = useState<UserInfo | null>(null);
 
@@ -65,12 +67,13 @@ export function NavUser() {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className={cn(
+                "data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground",
+                state === "collapsed" ? "rounded-full" : "rounded",
+              )}
             >
               <Avatar className="h-8 w-8 shrink-0">
-                <AvatarFallback className="text-xs font-medium">
-                  {initials}
-                </AvatarFallback>
+                <AvatarFallback className="text-xs font-medium">{initials}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
@@ -79,14 +82,15 @@ export function NavUser() {
               <HugeiconsIcon icon={ArrowUpDownIcon} size={14} strokeWidth={1.5} className="ml-auto shrink-0 text-muted-foreground" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
+
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56"
-            side={isMobile ? "bottom" : "right"}
+            side={state === "collapsed" ? "right" : "top"}
             align="end"
-            sideOffset={4}
+            sideOffset={state === "collapsed" ? 10 : 4}
           >
             <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-2 py-2 text-left text-sm">
+              <div className="flex items-center gap-2 px-2 py-2.5 text-left text-sm">
                 <Avatar className="h-8 w-8 shrink-0">
                   <AvatarFallback className="text-xs font-medium">{initials}</AvatarFallback>
                 </Avatar>
@@ -96,14 +100,20 @@ export function NavUser() {
                 </div>
               </div>
             </DropdownMenuLabel>
+
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => {}}>
-              <HugeiconsIcon icon={UserCircleIcon} size={14} strokeWidth={2} />
-              Account
-            </DropdownMenuItem>
+
+            <DropdownMenuGroup>
+              <DropdownMenuItem className="px-2 py-2.5">
+                <HugeiconsIcon icon={UserCircleIcon} size={14} strokeWidth={2} />
+                Account
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+
             <DropdownMenuSeparator />
+
             <DropdownMenuItem variant="destructive" onClick={handleSignOut}>
-              <HugeiconsIcon icon={Logout01Icon} size={14} strokeWidth={2} />
+              <HugeiconsIcon icon={LoginSquare01Icon} size={14} strokeWidth={2} />
               Sign out
             </DropdownMenuItem>
           </DropdownMenuContent>
