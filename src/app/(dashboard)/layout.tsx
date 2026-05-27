@@ -1,3 +1,4 @@
+import { GlobalSheets } from "@/components/sheets/global-sheets";
 import { Sidebar } from "./sidebar";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -7,6 +8,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <main className="ml-56 flex-1 min-w-0">
         {children}
       </main>
+      <GlobalSheets />
     </div>
   );
 }
