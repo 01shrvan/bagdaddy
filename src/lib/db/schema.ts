@@ -46,6 +46,7 @@ export const invoices = pgTable("invoices", {
   clientId: text("client_id").notNull().references(() => clients.id),
   projectId: text("project_id").references(() => projects.id),
   invoiceNumber: text("invoice_number").notNull().unique(),
+  publicToken: text("public_token").$defaultFn(() => createId()),
   status: invoiceStatusEnum("status").default("DRAFT").notNull(),
   dueDate: timestamp("due_date"),
   totalAmount: decimal("total_amount", { precision: 10, scale: 2 }).notNull(),

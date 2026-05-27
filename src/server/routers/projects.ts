@@ -1,7 +1,7 @@
 import { router, protectedProcedure } from "@/server/trpc";
 import { db } from "@/lib/db";
-import { projects, clients } from "@/lib/db/schema";
-import { eq, and, sql, inArray } from "drizzle-orm";
+import { projects, clients, invoices } from "@/lib/db/schema";
+import { eq, and, inArray } from "drizzle-orm";
 import { z } from "zod/v4";
 
 export const projectsRouter = router({
@@ -57,6 +57,7 @@ export const projectsRouter = router({
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const userClients = db.select({ id: clients.id }).from(clients).where(eq(clients.userId, ctx.user.id));
+      await db.update(invoices).set({ projectId: null }).where(eq(invoices.projectId, input.id));
       await db.delete(projects).where(and(eq(projects.id, input.id), inArray(projects.clientId, userClients)));
     }),
 });

@@ -6,6 +6,7 @@ import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { TRPCProvider } from "@/lib/trpc/client";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { Toaster } from "sonner";
 import SuperJSON from "superjson";
 import type { AppRouter } from "@/server/routers";
 
@@ -34,6 +35,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <QueryClientProvider client={queryClient}>
           <TooltipProvider>
             {children}
+            <Toaster position="bottom-right" />
           </TooltipProvider>
         </QueryClientProvider>
       </TRPCProvider>

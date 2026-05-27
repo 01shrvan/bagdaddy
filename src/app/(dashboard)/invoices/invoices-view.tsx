@@ -5,12 +5,19 @@ import { useTRPC } from "@/lib/trpc/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { AddInvoiceIcon, MoreHorizontalIcon, Delete01Icon, InvoiceIcon } from "@hugeicons/core-free-icons";
+import { AddInvoiceIcon, MoreHorizontalIcon, Delete01Icon, InvoiceIcon, Mail01Icon, Link01Icon, ArrowUpRightIcon } from "@hugeicons/core-free-icons";
 import { useInvoiceSheetParams } from "@/hooks/sheets/use-invoice-sheet";
 import { Container } from "@/components/container";
+import { toast } from "sonner";
 
 const STATUS_VARIANTS: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
   DRAFT: "outline",
@@ -28,12 +35,32 @@ export function InvoicesView() {
       onSuccess: () => qc.invalidateQueries(trpc.invoices.list.queryFilter()),
     }),
   );
+  const sendInvoice = useMutation(
+    trpc.invoices.send.mutationOptions({
+      onSuccess: (data) => {
+        qc.invalidateQueries(trpc.invoices.list.queryFilter());
+        toast.success(`Invoice sent to ${data.sentTo}`);
+      },
+      onError: (err) => toast.error(err.message),
+    }),
+  );
   const { setParams } = useInvoiceSheetParams();
 
   const totalOutstanding =
     rows
       ?.filter((r) => r.invoice.status === "SENT" || r.invoice.status === "OVERDUE")
       .reduce((sum, r) => sum + parseFloat(r.invoice.totalAmount), 0) ?? 0;
+
+  function copyLink(token: string | null | undefined) {
+    if (!token) return toast.error("This invoice has no shareable link yet");
+    const url = `${window.location.origin}/i/${token}`;
+    navigator.clipboard.writeText(url).then(() => toast.success("Link copied to clipboard"));
+  }
+
+  function openInvoice(token: string | null | undefined) {
+    if (!token) return toast.error("This invoice has no shareable link yet");
+    window.open(`/i/${token}`, "_blank");
+  }
 
   return (
     <Container>
@@ -115,6 +142,24 @@ export function InvoicesView() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => openInvoice(invoice.publicToken)}>
+                            <HugeiconsIcon icon={ArrowUpRightIcon} size={13} strokeWidth={2} className="mr-2 text-muted-foreground" />
+                            View invoice
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => copyLink(invoice.publicToken)}>
+                            <HugeiconsIcon icon={Link01Icon} size={13} strokeWidth={2} className="mr-2 text-muted-foreground" />
+                            Copy link
+                          </DropdownMenuItem>
+                          {(invoice.status === "DRAFT" || invoice.status === "SENT") && (
+                            <DropdownMenuItem
+                              onClick={() => sendInvoice.mutate({ id: invoice.id })}
+                              disabled={sendInvoice.isPending}
+                            >
+                              <HugeiconsIcon icon={Mail01Icon} size={13} strokeWidth={2} className="mr-2 text-muted-foreground" />
+                              {invoice.status === "DRAFT" ? "Send to client" : "Resend to client"}
+                            </DropdownMenuItem>
+                          )}
+                          <DropdownMenuSeparator />
                           {invoice.status === "DRAFT" && (
                             <DropdownMenuItem
                               onClick={() => updateStatus.mutate({ id: invoice.id, status: "SENT" })}
@@ -122,7 +167,7 @@ export function InvoicesView() {
                               Mark as sent
                             </DropdownMenuItem>
                           )}
-                          {invoice.status === "SENT" && (
+                          {(invoice.status === "SENT" || invoice.status === "OVERDUE") && (
                             <DropdownMenuItem
                               onClick={() => updateStatus.mutate({ id: invoice.id, status: "PAID" })}
                             >
