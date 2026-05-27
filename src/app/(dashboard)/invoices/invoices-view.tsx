@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { AddInvoiceIcon, MoreHorizontalIcon, Delete01Icon, InvoiceIcon, Mail01Icon, Link01Icon, ArrowUpRightIcon } from "@hugeicons/core-free-icons";
+import { AddInvoiceIcon, MoreHorizontalIcon, Delete01Icon, InvoiceIcon, Link01Icon, ArrowUpRightIcon } from "@hugeicons/core-free-icons";
 import { useInvoiceSheetParams } from "@/hooks/sheets/use-invoice-sheet";
 import { Container } from "@/components/container";
 import { toast } from "sonner";
@@ -33,15 +33,6 @@ export function InvoicesView() {
   const updateStatus = useMutation(
     trpc.invoices.updateStatus.mutationOptions({
       onSuccess: () => qc.invalidateQueries(trpc.invoices.list.queryFilter()),
-    }),
-  );
-  const sendInvoice = useMutation(
-    trpc.invoices.send.mutationOptions({
-      onSuccess: (data) => {
-        qc.invalidateQueries(trpc.invoices.list.queryFilter());
-        toast.success(`Invoice sent to ${data.sentTo}`);
-      },
-      onError: (err) => toast.error(err.message),
     }),
   );
   const { setParams } = useInvoiceSheetParams();
@@ -150,15 +141,6 @@ export function InvoicesView() {
                             <HugeiconsIcon icon={Link01Icon} size={13} strokeWidth={2} className="mr-2 text-muted-foreground" />
                             Copy link
                           </DropdownMenuItem>
-                          {(invoice.status === "DRAFT" || invoice.status === "SENT") && (
-                            <DropdownMenuItem
-                              onClick={() => sendInvoice.mutate({ id: invoice.id })}
-                              disabled={sendInvoice.isPending}
-                            >
-                              <HugeiconsIcon icon={Mail01Icon} size={13} strokeWidth={2} className="mr-2 text-muted-foreground" />
-                              {invoice.status === "DRAFT" ? "Send to client" : "Resend to client"}
-                            </DropdownMenuItem>
-                          )}
                           <DropdownMenuSeparator />
                           {invoice.status === "DRAFT" && (
                             <DropdownMenuItem
