@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import * as SheetComponent from "@/components/ui/sheet";
 import { useTRPC } from "@/lib/trpc/client";
-import { useSheetsStore } from "@/store/sheets";
+import { useProjectSheetParams } from "@/hooks/sheets/use-project-sheet";
 
 const schema = z.object({
   clientId: z.string().min(1, "Select a client"),
@@ -22,7 +22,8 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export function ProjectCreateSheet() {
-  const { projectCreate, closeProjectCreate } = useSheetsStore();
+  const { projectCreate, setParams } = useProjectSheetParams();
+  const isOpen = Boolean(projectCreate);
   const trpc = useTRPC();
   const qc = useQueryClient();
   const { data: clientsList } = useQuery(trpc.clients.list.queryOptions());
@@ -36,7 +37,7 @@ export function ProjectCreateSheet() {
     trpc.projects.create.mutationOptions({
       onSuccess: () => {
         qc.invalidateQueries(trpc.projects.list.queryFilter());
-        closeProjectCreate();
+        setParams({ projectCreate: null });
         reset();
       },
     }),
@@ -44,42 +45,30 @@ export function ProjectCreateSheet() {
 
   return (
     <SheetComponent.Sheet
-      open={projectCreate}
+      open={isOpen}
       onOpenChange={(nextOpen) => {
-        if (!nextOpen) {
-          closeProjectCreate();
-          reset();
-        }
+        if (!nextOpen) { setParams({ projectCreate: null }); reset(); }
       }}
     >
       <SheetComponent.SheetContent showCloseButton={false}>
         <SheetComponent.SheetHeader className="flex flex-row items-center justify-between">
           <SheetComponent.SheetTitle>New project</SheetComponent.SheetTitle>
           <SheetComponent.SheetClose asChild>
-            <Button
-              variant="ghost"
-              className="m-0 size-auto p-0 hover:bg-transparent"
-              size="icon"
-            >
+            <Button variant="ghost" className="m-0 size-auto p-0 hover:bg-transparent" size="icon">
               <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
               <span className="sr-only">Close</span>
             </Button>
           </SheetComponent.SheetClose>
         </SheetComponent.SheetHeader>
 
-        <form
-          onSubmit={handleSubmit((d) => create.mutate(d))}
-          className="flex h-full flex-col"
-        >
+        <form onSubmit={handleSubmit((d) => create.mutate(d))} className="flex h-full flex-col">
           <div className="space-y-4 p-4">
             <div className="space-y-1.5">
               <Label>Client</Label>
               <Select onValueChange={(v) => setValue("clientId", v)}>
                 <SelectTrigger><SelectValue placeholder="Select client" /></SelectTrigger>
                 <SelectContent>
-                  {clientsList?.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                  ))}
+                  {clientsList?.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
                 </SelectContent>
               </Select>
               {errors.clientId && <p className="text-xs text-destructive">{errors.clientId.message}</p>}
@@ -95,13 +84,10 @@ export function ProjectCreateSheet() {
               {errors.hourlyRate && <p className="text-xs text-destructive">{errors.hourlyRate.message}</p>}
             </div>
           </div>
-
           <div className="mt-auto p-4">
             <div className="grid grid-cols-2 gap-x-2">
               <SheetComponent.SheetClose asChild>
-                <Button type="button" variant="outline" size="lg" disabled={create.isPending}>
-                  Cancel
-                </Button>
+                <Button type="button" variant="outline" size="lg" disabled={create.isPending}>Cancel</Button>
               </SheetComponent.SheetClose>
               <Button type="submit" size="lg" disabled={create.isPending}>
                 {create.isPending ? "Creating..." : "Create project"}

@@ -8,18 +8,18 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { UserAdd01Icon, MoreHorizontalIcon, Edit01Icon, Delete01Icon, UserGroupIcon } from "@hugeicons/core-free-icons";
-import { useSheetsStore } from "@/store/sheets";
+import { useClientSheetParams } from "@/hooks/sheets/use-client-sheet";
 
 export function ClientsView() {
   const trpc = useTRPC();
   const { data: clientsList, isLoading } = useQuery(trpc.clients.list.queryOptions());
-  const { openClientCreate, openClientEdit, openClientDelete } = useSheetsStore();
+  const { setParams } = useClientSheetParams();
 
   return (
     <div className="flex flex-col min-h-screen">
       <header className="h-14 border-b border-border flex items-center justify-between px-6">
         <h1 className="text-sm font-medium">Clients</h1>
-        <Button size="sm" onClick={openClientCreate}>
+        <Button size="sm" onClick={() => setParams({ clientCreate: true })}>
           <HugeiconsIcon icon={UserAdd01Icon} size={14} strokeWidth={2} className="mr-1.5" />
           New client
         </Button>
@@ -34,7 +34,7 @@ export function ClientsView() {
           <div className="flex flex-col items-center justify-center py-24 gap-3">
             <HugeiconsIcon icon={UserGroupIcon} size={32} strokeWidth={1.5} className="text-muted-foreground" />
             <p className="text-sm text-muted-foreground">No clients yet. Add your first one.</p>
-            <Button size="sm" variant="outline" onClick={openClientCreate}>Add client</Button>
+            <Button size="sm" variant="outline" onClick={() => setParams({ clientCreate: true })}>Add client</Button>
           </div>
         ) : (
           <div className="border border-border">
@@ -61,10 +61,10 @@ export function ClientsView() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => openClientEdit(client)}>
+                          <DropdownMenuItem onClick={() => setParams({ clientEdit: client.id })}>
                             <HugeiconsIcon icon={Edit01Icon} size={13} strokeWidth={2} className="mr-2" />Edit
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-destructive" onClick={() => openClientDelete(client.id)}>
+                          <DropdownMenuItem className="text-destructive" onClick={() => setParams({ clientDelete: client.id })}>
                             <HugeiconsIcon icon={Delete01Icon} size={13} strokeWidth={2} className="mr-2" />Delete
                           </DropdownMenuItem>
                         </DropdownMenuContent>

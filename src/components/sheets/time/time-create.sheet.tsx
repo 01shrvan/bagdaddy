@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import * as SheetComponent from "@/components/ui/sheet";
 import { useTRPC } from "@/lib/trpc/client";
-import { useSheetsStore } from "@/store/sheets";
+import { useTimeSheetParams } from "@/hooks/sheets/use-time-sheet";
 
 const schema = z.object({
   projectId: z.string().min(1, "Select a project"),
@@ -23,26 +23,21 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export function TimeCreateSheet() {
-  const { timeCreate, closeTimeCreate } = useSheetsStore();
+  const { timeCreate, setParams } = useTimeSheetParams();
   const trpc = useTRPC();
   const qc = useQueryClient();
   const { data: projects } = useQuery(trpc.projects.list.queryOptions());
 
   const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema as any),
-    defaultValues: {
-      projectId: "",
-      hours: "",
-      description: "",
-      date: new Date().toISOString().split("T")[0],
-    },
+    defaultValues: { projectId: "", hours: "", description: "", date: new Date().toISOString().split("T")[0] },
   });
 
   const create = useMutation(
     trpc.time.create.mutationOptions({
       onSuccess: () => {
         qc.invalidateQueries(trpc.time.list.queryFilter());
-        closeTimeCreate();
+        setParams({ timeCreate: null });
         reset();
       },
     }),
@@ -50,33 +45,21 @@ export function TimeCreateSheet() {
 
   return (
     <SheetComponent.Sheet
-      open={timeCreate}
-      onOpenChange={(nextOpen) => {
-        if (!nextOpen) {
-          closeTimeCreate();
-          reset();
-        }
-      }}
+      open={Boolean(timeCreate)}
+      onOpenChange={(nextOpen) => { if (!nextOpen) { setParams({ timeCreate: null }); reset(); } }}
     >
       <SheetComponent.SheetContent showCloseButton={false}>
         <SheetComponent.SheetHeader className="flex flex-row items-center justify-between">
           <SheetComponent.SheetTitle>Log time</SheetComponent.SheetTitle>
           <SheetComponent.SheetClose asChild>
-            <Button
-              variant="ghost"
-              className="m-0 size-auto p-0 hover:bg-transparent"
-              size="icon"
-            >
+            <Button variant="ghost" className="m-0 size-auto p-0 hover:bg-transparent" size="icon">
               <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
               <span className="sr-only">Close</span>
             </Button>
           </SheetComponent.SheetClose>
         </SheetComponent.SheetHeader>
 
-        <form
-          onSubmit={handleSubmit((d) => create.mutate(d))}
-          className="flex h-full flex-col"
-        >
+        <form onSubmit={handleSubmit((d) => create.mutate(d))} className="flex h-full flex-col">
           <div className="space-y-4 p-4">
             <div className="space-y-1.5">
               <Label>Project</Label>
@@ -108,13 +91,10 @@ export function TimeCreateSheet() {
               <Input id="tc-desc" placeholder="What did you work on?" {...register("description")} />
             </div>
           </div>
-
           <div className="mt-auto p-4">
             <div className="grid grid-cols-2 gap-x-2">
               <SheetComponent.SheetClose asChild>
-                <Button type="button" variant="outline" size="lg" disabled={create.isPending}>
-                  Cancel
-                </Button>
+                <Button type="button" variant="outline" size="lg" disabled={create.isPending}>Cancel</Button>
               </SheetComponent.SheetClose>
               <Button type="submit" size="lg" disabled={create.isPending}>
                 {create.isPending ? "Saving..." : "Log time"}

@@ -40,18 +40,12 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <Link href="/dashboard">
-                <div className="flex h-8 w-8 items-center justify-center">
-                  <IconLogo size={20} className="shrink-0" />
-                </div>
-                <span className="text-sm font-semibold tracking-tight">bagdaddy</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <div className="flex h-12 items-center gap-2 px-2">
+          <div className="flex h-7 w-7 items-center justify-center">
+            <IconLogo size={18} className="shrink-0" />
+          </div>
+          <span className="text-sm font-semibold tracking-tight group-data-[collapsible=icon]:hidden">bagdaddy</span>
+        </div>
       </SidebarHeader>
 
       <SidebarSeparator />

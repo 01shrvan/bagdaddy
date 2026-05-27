@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import * as SheetComponent from "@/components/ui/sheet";
 import { useTRPC } from "@/lib/trpc/client";
-import { useSheetsStore } from "@/store/sheets";
+import { useClientSheetParams } from "@/hooks/sheets/use-client-sheet";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -22,7 +22,8 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export function ClientCreateSheet() {
-  const { clientCreate, closeClientCreate } = useSheetsStore();
+  const { clientCreate, setParams } = useClientSheetParams();
+  const isOpen = Boolean(clientCreate);
   const trpc = useTRPC();
   const qc = useQueryClient();
 
@@ -35,7 +36,7 @@ export function ClientCreateSheet() {
     trpc.clients.create.mutationOptions({
       onSuccess: () => {
         qc.invalidateQueries(trpc.clients.list.queryFilter());
-        closeClientCreate();
+        setParams({ clientCreate: null });
         reset();
       },
     }),
@@ -43,10 +44,10 @@ export function ClientCreateSheet() {
 
   return (
     <SheetComponent.Sheet
-      open={clientCreate}
+      open={isOpen}
       onOpenChange={(nextOpen) => {
         if (!nextOpen) {
-          closeClientCreate();
+          setParams({ clientCreate: null });
           reset();
         }
       }}
@@ -55,21 +56,14 @@ export function ClientCreateSheet() {
         <SheetComponent.SheetHeader className="flex flex-row items-center justify-between">
           <SheetComponent.SheetTitle>New client</SheetComponent.SheetTitle>
           <SheetComponent.SheetClose asChild>
-            <Button
-              variant="ghost"
-              className="m-0 size-auto p-0 hover:bg-transparent"
-              size="icon"
-            >
+            <Button variant="ghost" className="m-0 size-auto p-0 hover:bg-transparent" size="icon">
               <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
               <span className="sr-only">Close</span>
             </Button>
           </SheetComponent.SheetClose>
         </SheetComponent.SheetHeader>
 
-        <form
-          onSubmit={handleSubmit((d) => create.mutate(d))}
-          className="flex h-full flex-col"
-        >
+        <form onSubmit={handleSubmit((d) => create.mutate(d))} className="flex h-full flex-col">
           <div className="space-y-4 p-4">
             <div className="space-y-1.5">
               <Label htmlFor="cc-name">Name</Label>
@@ -90,13 +84,10 @@ export function ClientCreateSheet() {
               <Input id="cc-address" placeholder="123 Main St" {...register("address")} />
             </div>
           </div>
-
           <div className="mt-auto p-4">
             <div className="grid grid-cols-2 gap-x-2">
               <SheetComponent.SheetClose asChild>
-                <Button type="button" variant="outline" size="lg" disabled={create.isPending}>
-                  Cancel
-                </Button>
+                <Button type="button" variant="outline" size="lg" disabled={create.isPending}>Cancel</Button>
               </SheetComponent.SheetClose>
               <Button type="submit" size="lg" disabled={create.isPending}>
                 {create.isPending ? "Creating..." : "Create client"}

@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Logout01Icon, UserCircleIcon } from "@hugeicons/core-free-icons";
-import { ChevronsUpDown } from "lucide-react";
+import { Logout01Icon, UserCircleIcon, ArrowUpDownIcon } from "@hugeicons/core-free-icons";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -77,7 +76,7 @@ export function NavUser() {
                 <span className="truncate font-medium">{user.name}</span>
                 <span className="truncate text-xs text-muted-foreground">{user.email}</span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4 shrink-0 text-muted-foreground" />
+              <HugeiconsIcon icon={ArrowUpDownIcon} size={14} strokeWidth={1.5} className="ml-auto shrink-0 text-muted-foreground" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent

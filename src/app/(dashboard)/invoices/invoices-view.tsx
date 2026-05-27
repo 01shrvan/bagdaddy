@@ -9,7 +9,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { AddInvoiceIcon, MoreHorizontalIcon, Delete01Icon, InvoiceIcon } from "@hugeicons/core-free-icons";
-import { useSheetsStore } from "@/store/sheets";
+import { useInvoiceSheetParams } from "@/hooks/sheets/use-invoice-sheet";
 
 const STATUS_VARIANTS: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
   DRAFT: "outline", SENT: "secondary", PAID: "default", OVERDUE: "destructive",
@@ -22,13 +22,13 @@ export function InvoicesView() {
   const updateStatus = useMutation(trpc.invoices.updateStatus.mutationOptions({
     onSuccess: () => qc.invalidateQueries(trpc.invoices.list.queryFilter()),
   }));
-  const { openInvoiceCreate, openInvoiceDelete } = useSheetsStore();
+  const { setParams } = useInvoiceSheetParams();
 
   return (
     <div className="flex flex-col min-h-screen">
       <header className="h-14 border-b border-border flex items-center justify-between px-6">
         <h1 className="text-sm font-medium">Invoices</h1>
-        <Button size="sm" onClick={openInvoiceCreate}>
+        <Button size="sm" onClick={() => setParams({ invoiceCreate: true })}>
           <HugeiconsIcon icon={AddInvoiceIcon} size={14} strokeWidth={2} className="mr-1.5" />
           New invoice
         </Button>
@@ -43,7 +43,7 @@ export function InvoicesView() {
           <div className="flex flex-col items-center justify-center py-24 gap-3">
             <HugeiconsIcon icon={InvoiceIcon} size={32} strokeWidth={1.5} className="text-muted-foreground" />
             <p className="text-sm text-muted-foreground">No invoices yet.</p>
-            <Button size="sm" variant="outline" onClick={openInvoiceCreate}>New invoice</Button>
+            <Button size="sm" variant="outline" onClick={() => setParams({ invoiceCreate: true })}>New invoice</Button>
           </div>
         ) : (
           <div className="border border-border">
@@ -98,7 +98,7 @@ export function InvoicesView() {
                             </DropdownMenuItem>
                           )}
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-destructive" onClick={() => openInvoiceDelete(invoice.id)}>
+                          <DropdownMenuItem className="text-destructive" onClick={() => setParams({ invoiceDelete: invoice.id })}>
                             <HugeiconsIcon icon={Delete01Icon} size={13} strokeWidth={2} className="mr-2" />Delete
                           </DropdownMenuItem>
                         </DropdownMenuContent>

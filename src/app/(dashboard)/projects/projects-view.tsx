@@ -9,7 +9,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { FolderAddIcon, MoreHorizontalIcon, Edit01Icon, Delete01Icon, FolderOpenIcon } from "@hugeicons/core-free-icons";
-import { useSheetsStore } from "@/store/sheets";
+import { useProjectSheetParams } from "@/hooks/sheets/use-project-sheet";
 
 const STATUS_LABELS = { ACTIVE: "Active", COMPLETED: "Completed", ARCHIVED: "Archived" } as const;
 const STATUS_VARIANTS = { ACTIVE: "default", COMPLETED: "secondary", ARCHIVED: "outline" } as const;
@@ -17,13 +17,13 @@ const STATUS_VARIANTS = { ACTIVE: "default", COMPLETED: "secondary", ARCHIVED: "
 export function ProjectsView() {
   const trpc = useTRPC();
   const { data: rows, isLoading } = useQuery(trpc.projects.list.queryOptions());
-  const { openProjectCreate, openProjectEdit, openProjectDelete } = useSheetsStore();
+  const { setParams } = useProjectSheetParams();
 
   return (
     <div className="flex flex-col min-h-screen">
       <header className="h-14 border-b border-border flex items-center justify-between px-6">
         <h1 className="text-sm font-medium">Projects</h1>
-        <Button size="sm" onClick={openProjectCreate}>
+        <Button size="sm" onClick={() => setParams({ projectCreate: true })}>
           <HugeiconsIcon icon={FolderAddIcon} size={14} strokeWidth={2} className="mr-1.5" />
           New project
         </Button>
@@ -38,7 +38,7 @@ export function ProjectsView() {
           <div className="flex flex-col items-center justify-center py-24 gap-3">
             <HugeiconsIcon icon={FolderOpenIcon} size={32} strokeWidth={1.5} className="text-muted-foreground" />
             <p className="text-sm text-muted-foreground">No projects yet. Create your first one.</p>
-            <Button size="sm" variant="outline" onClick={openProjectCreate}>New project</Button>
+            <Button size="sm" variant="outline" onClick={() => setParams({ projectCreate: true })}>New project</Button>
           </div>
         ) : (
           <div className="border border-border">
@@ -69,10 +69,10 @@ export function ProjectsView() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => openProjectEdit({ project, clientName })}>
+                          <DropdownMenuItem onClick={() => setParams({ projectEdit: project.id })}>
                             <HugeiconsIcon icon={Edit01Icon} size={13} strokeWidth={2} className="mr-2" />Edit
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-destructive" onClick={() => openProjectDelete(project.id)}>
+                          <DropdownMenuItem className="text-destructive" onClick={() => setParams({ projectDelete: project.id })}>
                             <HugeiconsIcon icon={Delete01Icon} size={13} strokeWidth={2} className="mr-2" />Delete
                           </DropdownMenuItem>
                         </DropdownMenuContent>

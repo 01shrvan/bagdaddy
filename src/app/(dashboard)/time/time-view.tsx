@@ -7,12 +7,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ClockAddIcon, Delete01Icon, Clock01Icon } from "@hugeicons/core-free-icons";
-import { useSheetsStore } from "@/store/sheets";
+import { useTimeSheetParams } from "@/hooks/sheets/use-time-sheet";
 
 export function TimeView() {
   const trpc = useTRPC();
   const { data: entries, isLoading } = useQuery(trpc.time.list.queryOptions());
-  const { openTimeCreate, openTimeDelete } = useSheetsStore();
+  const { setParams } = useTimeSheetParams();
 
   const totalHours = entries?.reduce((sum, r) => sum + parseFloat(r.entry.hours), 0) ?? 0;
 
@@ -25,7 +25,7 @@ export function TimeView() {
             <span className="text-xs text-muted-foreground">{totalHours.toFixed(2)} hrs total</span>
           )}
         </div>
-        <Button size="sm" onClick={openTimeCreate}>
+        <Button size="sm" onClick={() => setParams({ timeCreate: true })}>
           <HugeiconsIcon icon={ClockAddIcon} size={14} strokeWidth={2} className="mr-1.5" />
           Log time
         </Button>
@@ -40,7 +40,7 @@ export function TimeView() {
           <div className="flex flex-col items-center justify-center py-24 gap-3">
             <HugeiconsIcon icon={Clock01Icon} size={32} strokeWidth={1.5} className="text-muted-foreground" />
             <p className="text-sm text-muted-foreground">No time entries yet.</p>
-            <Button size="sm" variant="outline" onClick={openTimeCreate}>Log time</Button>
+            <Button size="sm" variant="outline" onClick={() => setParams({ timeCreate: true })}>Log time</Button>
           </div>
         ) : (
           <div className="border border-border">
@@ -70,7 +70,7 @@ export function TimeView() {
                         variant="ghost"
                         size="icon"
                         className="h-7 w-7 text-muted-foreground hover:text-destructive"
-                        onClick={() => openTimeDelete(entry.id)}
+                        onClick={() => setParams({ timeDelete: entry.id })}
                       >
                         <HugeiconsIcon icon={Delete01Icon} size={13} strokeWidth={2} />
                       </Button>
