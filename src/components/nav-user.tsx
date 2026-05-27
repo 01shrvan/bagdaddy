@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { LoginSquare01Icon, UserCircleIcon, ArrowUpDownIcon } from "@hugeicons/core-free-icons";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -104,9 +105,11 @@ export function NavUser() {
             <DropdownMenuSeparator />
 
             <DropdownMenuGroup>
-              <DropdownMenuItem className="px-2 py-2.5">
-                <HugeiconsIcon icon={UserCircleIcon} size={14} strokeWidth={2} />
-                Account
+              <DropdownMenuItem asChild className="px-2 py-2.5">
+                <Link href="/settings">
+                  <HugeiconsIcon icon={UserCircleIcon} size={14} strokeWidth={2} />
+                  Account
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
 

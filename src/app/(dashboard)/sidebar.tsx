@@ -9,7 +9,6 @@ import {
   FolderOpenIcon,
   Clock01Icon,
   InvoiceIcon,
-  Settings02Icon,
 } from "@hugeicons/core-free-icons";
 import { IconLogo } from "@/components/icons";
 import { NavUser } from "@/components/nav-user";
@@ -96,23 +95,6 @@ export function AppSidebar() {
 
       {/* ── Footer ── */}
       <SidebarComponent.SidebarFooter>
-        <SidebarComponent.SidebarGroup className="p-0">
-          <SidebarComponent.SidebarGroupContent>
-            <SidebarComponent.SidebarMenu className="space-y-1">
-              <SidebarComponent.SidebarMenuButton
-                className="rounded font-medium"
-                size="sm"
-                asChild
-              >
-                <Link className="flex items-center text-muted-foreground" href="/settings">
-                  <HugeiconsIcon icon={Settings02Icon} size={15} strokeWidth={1.5} />
-                  {state !== "collapsed" && <span>Settings</span>}
-                </Link>
-              </SidebarComponent.SidebarMenuButton>
-            </SidebarComponent.SidebarMenu>
-          </SidebarComponent.SidebarGroupContent>
-        </SidebarComponent.SidebarGroup>
-
         <div className="w-full border-b" />
         <NavUser />
       </SidebarComponent.SidebarFooter>
