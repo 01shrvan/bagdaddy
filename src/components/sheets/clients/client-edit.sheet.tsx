@@ -47,8 +47,10 @@ export function ClientEditSheet() {
 
   const update = useMutation(
     trpc.clients.update.mutationOptions({
-      onSuccess: () => {
-        qc.invalidateQueries(trpc.clients.list.queryFilter());
+      onSuccess: (updated) => {
+        qc.setQueryData(trpc.clients.list.queryOptions().queryKey, (old: any) =>
+          old?.map((c: any) => (c.id === updated.id ? updated : c)) ?? [],
+        );
         setParams({ clientEdit: null });
       },
     }),

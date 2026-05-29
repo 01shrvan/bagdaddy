@@ -17,7 +17,9 @@ export function ClientDeleteSheet() {
   const del = useMutation(
     trpc.clients.delete.mutationOptions({
       onSuccess: () => {
-        qc.invalidateQueries(trpc.clients.list.queryFilter());
+        qc.setQueryData(trpc.clients.list.queryOptions().queryKey, (old: any) =>
+          old?.filter((c: any) => c.id !== clientDelete) ?? [],
+        );
         setParams({ clientDelete: null });
       },
     }),

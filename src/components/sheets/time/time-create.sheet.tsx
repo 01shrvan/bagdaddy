@@ -36,9 +36,9 @@ export function TimeCreateSheet() {
   const create = useMutation(
     trpc.time.create.mutationOptions({
       onSuccess: () => {
-        qc.invalidateQueries(trpc.time.list.queryFilter());
         setParams({ timeCreate: null });
         reset();
+        qc.invalidateQueries(trpc.time.list.queryFilter());
       },
     }),
   );

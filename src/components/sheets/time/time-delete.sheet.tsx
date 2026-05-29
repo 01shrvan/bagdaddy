@@ -17,7 +17,9 @@ export function TimeDeleteSheet() {
   const del = useMutation(
     trpc.time.delete.mutationOptions({
       onSuccess: () => {
-        qc.invalidateQueries(trpc.time.list.queryFilter());
+        qc.setQueryData(trpc.time.list.queryOptions().queryKey, (old: any) =>
+          old?.filter((r: any) => r.entry.id !== timeDelete) ?? [],
+        );
         setParams({ timeDelete: null });
       },
     }),

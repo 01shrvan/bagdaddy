@@ -34,8 +34,8 @@ export function ClientCreateSheet() {
 
   const create = useMutation(
     trpc.clients.create.mutationOptions({
-      onSuccess: () => {
-        qc.invalidateQueries(trpc.clients.list.queryFilter());
+      onSuccess: (newClient) => {
+        qc.setQueryData(trpc.clients.list.queryOptions().queryKey, (old: any) => [...(old ?? []), newClient]);
         setParams({ clientCreate: null });
         reset();
       },

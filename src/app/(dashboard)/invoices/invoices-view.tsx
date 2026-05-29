@@ -14,10 +14,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { AddInvoiceIcon, MoreHorizontalIcon, Delete01Icon, InvoiceIcon, Link01Icon, ArrowUpRightIcon } from "@hugeicons/core-free-icons";
+import { AddInvoiceIcon, MoreHorizontalIcon, Delete01Icon, InvoiceIcon, Link01Icon, ArrowUpRightIcon, PencilEdit01Icon } from "@hugeicons/core-free-icons";
 import { useInvoiceSheetParams } from "@/hooks/sheets/use-invoice-sheet";
 import { Container } from "@/components/container";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const STATUS_VARIANTS: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
   DRAFT: "outline",
@@ -32,10 +33,15 @@ export function InvoicesView() {
   const { data: rows, isLoading } = useQuery(trpc.invoices.list.queryOptions());
   const updateStatus = useMutation(
     trpc.invoices.updateStatus.mutationOptions({
-      onSuccess: () => qc.invalidateQueries(trpc.invoices.list.queryFilter()),
+      onSuccess: (updated) => {
+        qc.setQueryData(trpc.invoices.list.queryOptions().queryKey, (old: any) =>
+          old?.map((r: any) => r.invoice.id === updated.id ? { ...r, invoice: updated } : r) ?? [],
+        );
+      },
     }),
   );
   const { setParams } = useInvoiceSheetParams();
+  const router = useRouter();
 
   const totalOutstanding =
     rows
@@ -105,7 +111,7 @@ export function InvoicesView() {
               </TableHeader>
               <TableBody>
                 {rows.map(({ invoice, clientName }) => (
-                  <TableRow key={invoice.id}>
+                  <TableRow key={invoice.id} className="cursor-pointer" onClick={() => router.push(`/invoices/${invoice.id}`)}>
                     <TableCell className="font-mono text-sm">{invoice.invoiceNumber}</TableCell>
                     <TableCell className="font-medium">{clientName}</TableCell>
                     <TableCell className="text-muted-foreground text-sm">
@@ -125,7 +131,7 @@ export function InvoicesView() {
                         {invoice.status.charAt(0) + invoice.status.slice(1).toLowerCase()}
                       </Badge>
                     </TableCell>
-                    <TableCell>
+                    <TableCell onClick={(e) => e.stopPropagation()}>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="icon" className="h-7 w-7">
@@ -133,6 +139,10 @@ export function InvoicesView() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => router.push(`/invoices/${invoice.id}`)}>
+                            <HugeiconsIcon icon={PencilEdit01Icon} size={13} strokeWidth={2} className="mr-2 text-muted-foreground" />
+                            Edit invoice
+                          </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => openInvoice(invoice.publicToken)}>
                             <HugeiconsIcon icon={ArrowUpRightIcon} size={13} strokeWidth={2} className="mr-2 text-muted-foreground" />
                             View invoice

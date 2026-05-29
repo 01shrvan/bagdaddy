@@ -17,7 +17,9 @@ export function InvoiceDeleteSheet() {
   const del = useMutation(
     trpc.invoices.delete.mutationOptions({
       onSuccess: () => {
-        qc.invalidateQueries(trpc.invoices.list.queryFilter());
+        qc.setQueryData(trpc.invoices.list.queryOptions().queryKey, (old: any) =>
+          old?.filter((r: any) => r.invoice.id !== invoiceDelete) ?? [],
+        );
         setParams({ invoiceDelete: null });
       },
     }),

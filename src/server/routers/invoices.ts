@@ -84,6 +84,58 @@ export const invoicesRouter = router({
       return invoice;
     }),
 
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        clientId: z.string(),
+        projectId: z.string().optional(),
+        dueDate: z.string().optional(),
+        notes: z.string().optional(),
+        items: z.array(
+          z.object({
+            description: z.string().min(1),
+            quantity: z.string(),
+            unitPrice: z.string(),
+          }),
+        ).min(1),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const total = input.items.reduce((sum, item) => {
+        return sum + parseFloat(item.quantity) * parseFloat(item.unitPrice);
+      }, 0);
+
+      await db.delete(invoiceItems).where(eq(invoiceItems.invoiceId, input.id));
+
+      const [invoice] = await db
+        .update(invoices)
+        .set({
+          clientId: input.clientId,
+          projectId: input.projectId || null,
+          dueDate: input.dueDate ? new Date(input.dueDate) : null,
+          totalAmount: String(total.toFixed(2)),
+          notes: input.notes || null,
+        })
+        .where(and(eq(invoices.id, input.id), eq(invoices.userId, ctx.user.id)))
+        .returning();
+
+      if (!invoice) throw new TRPCError({ code: "NOT_FOUND" });
+
+      await db.insert(invoiceItems).values(
+        input.items.map((item) => ({
+          invoiceId: invoice.id,
+          description: item.description,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+          total: String((parseFloat(item.quantity) * parseFloat(item.unitPrice)).toFixed(2)),
+        })),
+      );
+
+      const items = await db.select().from(invoiceItems).where(eq(invoiceItems.invoiceId, invoice.id));
+      return { invoice, items };
+    }),
+
   updateStatus: protectedProcedure
     .input(
       z.object({

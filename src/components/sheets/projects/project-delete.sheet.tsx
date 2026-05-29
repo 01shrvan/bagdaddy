@@ -17,7 +17,9 @@ export function ProjectDeleteSheet() {
   const del = useMutation(
     trpc.projects.delete.mutationOptions({
       onSuccess: () => {
-        qc.invalidateQueries(trpc.projects.list.queryFilter());
+        qc.setQueryData(trpc.projects.list.queryOptions().queryKey, (old: any) =>
+          old?.filter((r: any) => r.project.id !== projectDelete) ?? [],
+        );
         setParams({ projectDelete: null });
       },
     }),
