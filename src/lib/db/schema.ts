@@ -13,7 +13,7 @@ export const users = pgTable("users", {
 
 export const clients = pgTable("clients", {
   id: text("id").primaryKey().$defaultFn(() => createId()),
-  userId: text("user_id").notNull().references(() => users.id),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
   email: text("email"),
   phone: text("phone"),
@@ -43,7 +43,7 @@ export const timeEntries = pgTable("time_entries", {
 export const invoices = pgTable("invoices", {
   id: text("id").primaryKey().$defaultFn(() => createId()),
   userId: text("user_id").notNull(),
-  clientId: text("client_id").notNull().references(() => clients.id),
+  clientId: text("client_id").notNull().references(() => clients.id, { onDelete: "cascade" }),
   projectId: text("project_id").references(() => projects.id),
   invoiceNumber: text("invoice_number").notNull().unique(),
   publicToken: text("public_token").$defaultFn(() => createId()),
