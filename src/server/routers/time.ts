@@ -38,6 +38,29 @@ export const timeRouter = router({
       return entry;
     }),
 
+  update: protectedProcedure
+    .input(z.object({
+      id: z.string(),
+      projectId: z.string(),
+      description: z.string().optional(),
+      hours: z.string().min(1),
+      date: z.string(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const userClients = db.select({ id: clients.id }).from(clients).where(eq(clients.userId, ctx.user.id));
+      const userProjects = db.select({ id: projects.id }).from(projects).where(inArray(projects.clientId, userClients));
+      const [entry] = await db.update(timeEntries)
+        .set({
+          projectId: input.projectId,
+          description: input.description || null,
+          hours: input.hours,
+          date: new Date(input.date),
+        })
+        .where(and(eq(timeEntries.id, input.id), inArray(timeEntries.projectId, userProjects)))
+        .returning();
+      return entry;
+    }),
+
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {

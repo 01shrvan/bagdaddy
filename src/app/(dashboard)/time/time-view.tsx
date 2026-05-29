@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ClockAddIcon, Delete01Icon, Clock01Icon } from "@hugeicons/core-free-icons";
+import { ClockAddIcon, Delete01Icon, Clock01Icon, PencilEdit01Icon } from "@hugeicons/core-free-icons";
 import { useTimeSheetParams } from "@/hooks/sheets/use-time-sheet";
 import { Container } from "@/components/container";
 
@@ -84,14 +84,24 @@ export function TimeView() {
                       {parseFloat(entry.hours).toFixed(2)}
                     </TableCell>
                     <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 text-muted-foreground hover:text-destructive"
-                        onClick={() => setParams({ timeDelete: entry.id })}
-                      >
-                        <HugeiconsIcon icon={Delete01Icon} size={13} strokeWidth={2} />
-                      </Button>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                          onClick={() => setParams({ timeEdit: entry.id })}
+                        >
+                          <HugeiconsIcon icon={PencilEdit01Icon} size={13} strokeWidth={2} />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                          onClick={() => setParams({ timeDelete: entry.id })}
+                        >
+                          <HugeiconsIcon icon={Delete01Icon} size={13} strokeWidth={2} />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

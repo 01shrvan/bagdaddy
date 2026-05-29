@@ -48,10 +48,15 @@ export function InvoicesView() {
       ?.filter((r) => r.invoice.status === "SENT" || r.invoice.status === "OVERDUE")
       .reduce((sum, r) => sum + parseFloat(r.invoice.totalAmount), 0) ?? 0;
 
-  function copyLink(token: string | null | undefined) {
+  function copyLink(token: string | null | undefined, invoiceId: string, status: string) {
     if (!token) return toast.error("This invoice has no shareable link yet");
     const url = `${window.location.origin}/i/${token}`;
-    navigator.clipboard.writeText(url).then(() => toast.success("Link copied to clipboard"));
+    navigator.clipboard.writeText(url).then(() => {
+      toast.success("Link copied to clipboard");
+      if (status === "DRAFT") {
+        updateStatus.mutate({ id: invoiceId, status: "SENT" });
+      }
+    });
   }
 
   function openInvoice(token: string | null | undefined) {
@@ -147,9 +152,12 @@ export function InvoicesView() {
                             <HugeiconsIcon icon={ArrowUpRightIcon} size={13} strokeWidth={2} className="mr-2 text-muted-foreground" />
                             View invoice
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => copyLink(invoice.publicToken)}>
+                          <DropdownMenuItem onClick={() => copyLink(invoice.publicToken, invoice.id, invoice.status)}>
                             <HugeiconsIcon icon={Link01Icon} size={13} strokeWidth={2} className="mr-2 text-muted-foreground" />
                             Copy link
+                            {invoice.status === "DRAFT" && (
+                              <span className="ml-auto text-[10px] text-muted-foreground/60">marks as sent</span>
+                            )}
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           {invoice.status === "DRAFT" && (
