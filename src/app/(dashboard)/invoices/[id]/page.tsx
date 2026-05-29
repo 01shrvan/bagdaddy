@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { invoices, invoiceItems, clients } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { createClient } from "@/lib/supabase/server";
-import { InvoiceEditor } from "./editor";
+import { InvoiceEditor } from "../invoice-editor";
 
 export default async function InvoiceEditorPage({
   params,
@@ -17,15 +17,16 @@ export default async function InvoiceEditorPage({
   if (!user) notFound();
 
   const [row] = await db
-    .select({ invoice: invoices, clientName: clients.name })
+    .select({ invoice: invoices })
     .from(invoices)
-    .innerJoin(clients, eq(invoices.clientId, clients.id))
     .where(and(eq(invoices.id, id), eq(invoices.userId, user.id)));
 
   if (!row) notFound();
 
-  const items = await db.select().from(invoiceItems).where(eq(invoiceItems.invoiceId, id));
-  const allClients = await db.select().from(clients).where(eq(clients.userId, user.id));
+  const [items, allClients] = await Promise.all([
+    db.select().from(invoiceItems).where(eq(invoiceItems.invoiceId, id)),
+    db.select().from(clients).where(eq(clients.userId, user.id)),
+  ]);
 
   return <InvoiceEditor invoice={row.invoice} items={items} clients={allClients} />;
 }

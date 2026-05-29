@@ -71,7 +71,7 @@ export function InvoicesView() {
                 : "Create and send invoices to your clients."}
             </p>
           </div>
-          <Button size="sm" onClick={() => setParams({ invoiceCreate: true })}>
+          <Button size="sm" onClick={() => router.push("/invoices/new")}>
             <HugeiconsIcon icon={AddInvoiceIcon} size={14} strokeWidth={2} className="mr-1.5" />
             New invoice
           </Button>
@@ -92,7 +92,7 @@ export function InvoicesView() {
               <p className="text-sm font-medium">No invoices yet</p>
               <p className="text-xs text-muted-foreground">Create your first invoice and send it to a client.</p>
             </div>
-            <Button size="sm" variant="outline" onClick={() => setParams({ invoiceCreate: true })}>
+            <Button size="sm" variant="outline" onClick={() => router.push("/invoices/new")}>
               New invoice
             </Button>
           </div>
