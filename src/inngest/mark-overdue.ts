@@ -4,8 +4,7 @@ import { db } from "@/lib/db";
 import { invoices } from "@/lib/db/schema";
 
 export const markOverdueInvoices = inngest.createFunction(
-  { id: "mark-overdue-invoices", name: "Mark overdue invoices" },
-  { cron: "0 1 * * *" },
+  { id: "mark-overdue-invoices", triggers: [{ cron: "0 1 * * *" }] },
   async () => {
     const now = new Date();
     const result = await db
