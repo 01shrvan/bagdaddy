@@ -1,24 +1,81 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Figtree, Raleway } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Providers } from "@/components/providers";
 
-const ralewayHeading = Raleway({subsets:['latin'],variable:'--font-heading'});
+const ralewayHeading = Raleway({ subsets: ["latin"], variable: "--font-heading" });
+const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
 
-const figtree = Figtree({subsets:['latin'],variable:'--font-sans'});
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://bagdaddy.vercel.app";
 
+export const viewport: Viewport = {
+  themeColor: "#0a0a0a",
+  colorScheme: "dark",
+};
 
 export const metadata: Metadata = {
-  title: "bagdaddy",
-  description: "Freelance invoice & project tracker",
+  metadataBase: new URL(APP_URL),
+  title: {
+    default: "bagdaddy — freelance finance, simplified",
+    template: "%s · bagdaddy",
+  },
+  description:
+    "Track clients, log hours, and send invoices. The no-nonsense freelance tool for people who'd rather be working than doing admin.",
+  keywords: [
+    "freelance invoice",
+    "invoice generator",
+    "project tracker",
+    "time tracking",
+    "freelancer tools",
+    "hourly billing",
+    "client management",
+    "freelance finance",
+  ],
+  authors: [{ name: "bagdaddy" }],
+  creator: "bagdaddy",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: APP_URL,
+    siteName: "bagdaddy",
+    title: "bagdaddy — freelance finance, simplified",
+    description:
+      "Track clients, log hours, and send invoices. The no-nonsense freelance tool for people who'd rather be working than doing admin.",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "bagdaddy — freelance finance, simplified",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "bagdaddy — freelance finance, simplified",
+    description:
+      "Track clients, log hours, and send invoices. The no-nonsense freelance tool for people who'd rather be working.",
+    images: ["/opengraph-image"],
+    creator: "@bagdaddy",
+  },
+  icons: {
+    icon: [
+      { url: "/icon", type: "image/svg+xml" },
+    ],
+    apple: "/apple-icon",
+  },
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="en"
