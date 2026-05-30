@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Figtree, Raleway } from "next/font/google";
+import { Syne, Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Providers } from "@/components/providers";
 
-const ralewayHeading = Raleway({ subsets: ["latin"], variable: "--font-heading" });
-const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
+const syne = Syne({ subsets: ["latin"], variable: "--font-heading", weight: ["400", "500", "600", "700", "800"] });
+const instrumentSans = Instrument_Sans({ subsets: ["latin"], variable: "--font-sans", weight: ["400", "500", "600", "700"] });
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://bagdaddy.vercel.app";
 
@@ -79,7 +79,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("dark h-full antialiased", "font-sans", figtree.variable, ralewayHeading.variable)}
+      className={cn("dark h-full antialiased", "font-sans", instrumentSans.variable, syne.variable)}
     >
       <body className="min-h-full flex flex-col">
         <Providers>{children}</Providers>
