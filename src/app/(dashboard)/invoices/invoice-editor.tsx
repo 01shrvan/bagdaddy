@@ -66,22 +66,28 @@ export function InvoiceEditor({
   invoice,
   items: initialItems,
   clients,
+  prefillClientId,
+  prefillItems,
 }: {
   invoice?: ExistingInvoice;
   items?: { description: string; quantity: string; unitPrice: string }[];
   clients: EditorClient[];
+  prefillClientId?: string;
+  prefillItems?: EditorItem[];
 }) {
   const router = useRouter();
   const trpc = useTRPC();
   const qc = useQueryClient();
   const isEdit = Boolean(invoice);
 
-  const [clientId, setClientId] = useState(invoice?.clientId ?? "");
+  const [clientId, setClientId] = useState(invoice?.clientId ?? prefillClientId ?? "");
   const [dueDate, setDueDate] = useState(toDateInput(invoice?.dueDate));
   const [notes, setNotes] = useState(invoice?.notes ?? "");
   const [items, setItems] = useState<EditorItem[]>(
     initialItems && initialItems.length > 0
       ? initialItems.map((i) => ({ description: i.description, quantity: i.quantity, unitPrice: i.unitPrice }))
+      : prefillItems && prefillItems.length > 0
+      ? prefillItems
       : [{ description: "", quantity: "1", unitPrice: "" }],
   );
 
@@ -94,7 +100,7 @@ export function InvoiceEditor({
           old ? [{ invoice: newInvoice, clientName: clients.find((c) => c.id === clientId)?.name ?? "" }, ...old] : [],
         );
         toast.success("Invoice created");
-        router.push("/invoices");
+        router.push(`/invoices/${newInvoice.id}`);
       },
       onError: (err) => toast.error(err.message),
     }),

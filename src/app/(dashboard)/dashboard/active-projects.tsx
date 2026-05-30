@@ -1,8 +1,8 @@
+import Link from "next/link";
 import { db } from "@/lib/db";
-import { projects, clients } from "@/lib/db/schema";
-import { eq, inArray, sql, desc } from "drizzle-orm";
+import { projects, clients, timeEntries } from "@/lib/db/schema";
+import { eq, and, inArray, desc, sum, sql } from "drizzle-orm";
 import { createClient } from "@/lib/supabase/server";
-import { Badge } from "@/components/ui/badge";
 
 export function ActiveProjectsSkeleton() {
   return (
@@ -33,10 +33,13 @@ export async function ActiveProjects() {
       name: projects.name,
       hourlyRate: projects.hourlyRate,
       clientName: clients.name,
+      totalHours: sum(timeEntries.hours),
     })
     .from(projects)
     .leftJoin(clients, eq(projects.clientId, clients.id))
-    .where(inArray(projects.clientId, userClients))
+    .leftJoin(timeEntries, eq(timeEntries.projectId, projects.id))
+    .where(and(inArray(projects.clientId, userClients), sql`${projects.status} = 'ACTIVE'::project_status`))
+    .groupBy(projects.id, clients.name)
     .orderBy(desc(projects.createdAt))
     .limit(5);
 
@@ -50,17 +53,25 @@ export async function ActiveProjects() {
 
   return (
     <div className="divide-y">
-      {rows.map((row) => (
-        <div key={row.id} className="flex items-center justify-between px-5 py-3 gap-4">
-          <div className="min-w-0">
-            <p className="text-sm font-medium truncate">{row.name}</p>
-            <p className="text-xs text-muted-foreground">{row.clientName}</p>
-          </div>
-          <span className="text-xs text-muted-foreground shrink-0">
-            ${parseFloat(row.hourlyRate).toFixed(0)}/hr
-          </span>
-        </div>
-      ))}
+      {rows.map((row) => {
+        const earned = (parseFloat(row.totalHours ?? "0") * parseFloat(row.hourlyRate)).toFixed(2);
+        return (
+          <Link
+            key={row.id}
+            href="/projects"
+            className="flex items-center justify-between px-5 py-3 gap-4 hover:bg-muted/40 transition-colors"
+          >
+            <div className="min-w-0">
+              <p className="text-sm font-medium truncate">{row.name}</p>
+              <p className="text-xs text-muted-foreground">{row.clientName}</p>
+            </div>
+            <div className="text-right shrink-0">
+              <p className="text-sm font-medium">${parseFloat(earned).toFixed(2)}</p>
+              <p className="text-xs text-muted-foreground">${parseFloat(row.hourlyRate).toFixed(0)}/hr</p>
+            </div>
+          </Link>
+        );
+      })}
     </div>
   );
 }
