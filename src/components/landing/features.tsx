@@ -13,34 +13,25 @@ import {
 const FEATURES = [
   { icon: InvoiceIcon, title: "Smart invoicing", desc: "Create, customize, and share invoices via a public link — no account needed for your client." },
   { icon: Clock01Icon, title: "Time tracking", desc: "Log hours against projects with one click. See total time and earnings per project instantly." },
-  { icon: DollarSquareIcon, title: "Earnings overview", desc: "Dashboard shows total earned, outstanding, and per-project breakdown at a glance." },
-  { icon: Link01Icon, title: "Public invoice links", desc: "Every invoice gets a unique shareable URL. Copy the link, send it — client sees a clean page." },
-  { icon: Alert02Icon, title: "Auto overdue detection", desc: "Invoices past their due date automatically flip to overdue. No manual chasing required." },
-  { icon: AddInvoiceIcon, title: "Instant invoice generation", desc: "Turn logged time entries into invoice line items in one click. Hours × rate = done." },
+  { icon: DollarSquareIcon, title: "Earnings overview", desc: "Your dashboard shows total earned, outstanding, and per-project breakdown at a glance." },
+  { icon: Link01Icon, title: "Public invoice links", desc: "Every invoice gets a unique shareable URL. Copy, send, done — your client sees a clean page." },
+  { icon: Alert02Icon, title: "Auto overdue detection", desc: "Invoices past their due date flip to overdue automatically. No manual chasing required." },
+  { icon: AddInvoiceIcon, title: "Instant generation", desc: "Turn logged time entries into invoice line items in one click. Hours times rate, calculated." },
 ];
 
 export function FeatureCards() {
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)" }}>
-      {FEATURES.map(({ icon, title, desc }, i) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-l border-border">
+      {FEATURES.map(({ icon, title, desc }) => (
         <div
           key={title}
-          style={{
-            padding: "40px 36px",
-            border: "1px solid #C8C0B4",
-            marginLeft: i % 3 !== 0 ? -1 : 0,
-            marginTop: i >= 3 ? -1 : 0,
-            transition: "background 0.15s",
-            cursor: "default",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = "#EDE7DC")}
-          onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+          className="group border-b border-r border-border p-8 transition-colors hover:bg-muted/40"
         >
-          <div style={{ width: 40, height: 40, border: "1px solid #C8C0B4", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 24 }}>
-            <HugeiconsIcon icon={icon} size={18} strokeWidth={1.5} style={{ color: "#111010" }} />
+          <div className="mb-6 flex h-10 w-10 items-center justify-center border border-border transition-colors group-hover:border-foreground/30">
+            <HugeiconsIcon icon={icon} size={18} strokeWidth={1.5} className="text-foreground" />
           </div>
-          <p style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 16, color: "#111010", margin: "0 0 10px", letterSpacing: "-0.3px" }}>{title}</p>
-          <p style={{ fontFamily: "var(--font-sans)", fontSize: 14, color: "#6B6461", margin: 0, lineHeight: 1.65 }}>{desc}</p>
+          <p className="font-heading text-base font-bold tracking-tight text-foreground mb-2">{title}</p>
+          <p className="text-sm leading-relaxed text-muted-foreground">{desc}</p>
         </div>
       ))}
     </div>

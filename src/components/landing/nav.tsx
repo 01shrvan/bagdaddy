@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { IconLogo } from "@/components/icons";
+import { cn } from "@/lib/utils";
 
 export function LandingNav() {
   const [scrolled, setScrolled] = useState(false);
@@ -15,71 +16,31 @@ export function LandingNav() {
 
   return (
     <header
-      style={{
-        position: "sticky",
-        top: 0,
-        zIndex: 50,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "0 48px",
-        height: 64,
-        backgroundColor: scrolled ? "rgba(242,237,228,0.92)" : "#F2EDE4",
-        backdropFilter: scrolled ? "blur(12px)" : "none",
-        borderBottom: scrolled ? "1px solid #C8C0B4" : "1px solid transparent",
-        transition: "all 0.2s ease",
-      }}
+      className={cn(
+        "sticky top-0 z-50 flex h-16 items-center justify-between px-6 md:px-12 transition-colors duration-200",
+        scrolled
+          ? "bg-background/85 backdrop-blur-md border-b border-border"
+          : "bg-background border-b border-transparent",
+      )}
     >
-      <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-        <IconLogo size={22} style={{ color: "#111010" }} />
-        <span style={{
-          fontFamily: "var(--font-heading)",
-          fontWeight: 700,
-          fontSize: 18,
-          color: "#111010",
-          letterSpacing: "-0.5px",
-        }}>
-          bagdaddy
-        </span>
+      <Link href="/" className="flex items-center gap-2.5">
+        <IconLogo size={22} className="text-foreground" />
+        <span className="font-heading text-lg font-bold tracking-tight text-foreground">bagdaddy</span>
       </Link>
 
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <div className="flex items-center gap-1">
         <Link
           href="/login"
-          style={{
-            fontFamily: "var(--font-sans)",
-            fontSize: 14,
-            fontWeight: 500,
-            color: "#6B6461",
-            textDecoration: "none",
-            padding: "8px 16px",
-            transition: "color 0.15s",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#111010")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "#6B6461")}
+          className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
         >
           Sign in
         </Link>
         <Link
           href="/login"
-          style={{
-            fontFamily: "var(--font-sans)",
-            fontSize: 14,
-            fontWeight: 600,
-            color: "#F2EDE4",
-            backgroundColor: "#111010",
-            textDecoration: "none",
-            padding: "9px 20px",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            transition: "opacity 0.15s",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
-          onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+          className="inline-flex items-center gap-1.5 bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
         >
           Get started
-          <span style={{ fontSize: 16 }}>→</span>
+          <span aria-hidden className="text-base leading-none">→</span>
         </Link>
       </div>
     </header>

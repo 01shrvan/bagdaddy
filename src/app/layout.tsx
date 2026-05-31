@@ -49,9 +49,11 @@ export const metadata: Metadata = {
       "Track clients, log hours, and send invoices. The no-nonsense freelance tool for people who'd rather be working than doing admin.",
     images: [
       {
-        url: "/opengraph-image",
+        url: `${APP_URL}/opengraph-image`,
+        secureUrl: `${APP_URL}/opengraph-image`,
         width: 1200,
         height: 630,
+        type: "image/png",
         alt: "bagdaddy — freelance finance, simplified",
       },
     ],
@@ -61,14 +63,11 @@ export const metadata: Metadata = {
     title: "bagdaddy — freelance finance, simplified",
     description:
       "Track clients, log hours, and send invoices. The no-nonsense freelance tool for people who'd rather be working.",
-    images: ["/opengraph-image"],
+    images: [`${APP_URL}/opengraph-image`],
     creator: "@bagdaddy",
   },
   icons: {
-    icon: [
-      { url: "/icon", type: "image/svg+xml" },
-    ],
-    apple: "/apple-icon",
+    icon: [{ url: "/icon", type: "image/png" }],
   },
   manifest: "/manifest.json",
 };

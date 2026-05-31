@@ -5,13 +5,28 @@ import { createClient } from "@/lib/supabase/server";
 import { IconLogo } from "@/components/icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  InvoiceIcon,
-  Clock01Icon,
   UserGroupIcon,
+  Clock01Icon,
+  InvoiceIcon,
   ChartIncreaseIcon,
 } from "@hugeicons/core-free-icons";
 import { LandingNav } from "@/components/landing/nav";
 import { FeatureCards } from "@/components/landing/features";
+
+const STEPS = [
+  { n: "01", label: "Add client", desc: "Name, email, address — everything in one place." },
+  { n: "02", label: "Create project", desc: "Set a name and hourly rate for the work." },
+  { n: "03", label: "Log hours", desc: "Track time daily against active projects." },
+  { n: "04", label: "Generate invoice", desc: "Auto-fill from logged hours in one click." },
+  { n: "05", label: "Get paid", desc: "Share the link. Client pays. Done." },
+];
+
+const STATS = [
+  { icon: UserGroupIcon, headline: "All your clients", sub: "Managed in one place" },
+  { icon: Clock01Icon, headline: "Hours × rate", sub: "Auto-calculated earnings" },
+  { icon: InvoiceIcon, headline: "Send in seconds", sub: "Via a shareable link" },
+  { icon: ChartIncreaseIcon, headline: "Know what's owed", sub: "Outstanding at a glance" },
+];
 
 export default async function Home() {
   const supabase = await createClient();
@@ -19,67 +34,52 @@ export default async function Home() {
   if (user) redirect("/dashboard");
 
   return (
-    <div style={{ background: "#F5F0E8", minHeight: "100vh", color: "#1A1208" }}>
+    <div className="min-h-screen bg-background text-foreground">
       <LandingNav />
 
-      {/* ── HERO ── */}
-      <section style={{ padding: "100px 48px 80px", borderBottom: "1px solid #D4CCC0" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, marginBottom: 48, padding: "5px 14px 5px 10px", border: "1px solid #D4CCC0", background: "#EDE7D8" }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#B8860B", display: "inline-block" }} />
-            <span style={{ fontFamily: "var(--font-sans)", fontSize: 12, fontWeight: 500, color: "#7A6E62", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+      {/* HERO */}
+      <section className="border-b border-border px-6 md:px-12 py-24 md:py-28">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-12 inline-flex items-center gap-2 border border-border bg-muted/40 px-3 py-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-foreground" />
+            <span className="text-xs font-medium uppercase tracking-[0.1em] text-muted-foreground">
               For freelancers who get things done
             </span>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "flex-end" }}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 lg:items-end">
             <div>
-              <h1 style={{
-                fontFamily: "var(--font-heading)",
-                fontWeight: 900,
-                fontSize: "clamp(60px, 6.5vw, 96px)",
-                lineHeight: 0.92,
-                letterSpacing: "-3px",
-                color: "#1A1208",
-                margin: "0 0 32px",
-              }}>
-                Track<br />
-                work.<br />
-                <span style={{ color: "#B8860B" }}>Get paid.</span>
+              <h1 className="font-heading font-extrabold leading-[0.92] tracking-tight text-[clamp(56px,7vw,96px)]">
+                Track work.
+                <br />
+                Get paid.
               </h1>
-              <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                <Link href="/login" style={{
-                  fontFamily: "var(--font-sans)", fontSize: 15, fontWeight: 600,
-                  color: "#F5F0E8", background: "#1A1208", textDecoration: "none",
-                  padding: "13px 28px", display: "inline-flex", alignItems: "center", gap: 8,
-                }}>
-                  Start free <span style={{ fontSize: 18, lineHeight: 1 }}>→</span>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link
+                  href="/login"
+                  className="inline-flex items-center gap-2 bg-primary px-7 py-3.5 text-[15px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                >
+                  Start free <span aria-hidden className="text-lg leading-none">→</span>
                 </Link>
-                <a href="#how" style={{
-                  fontFamily: "var(--font-sans)", fontSize: 15, fontWeight: 500,
-                  color: "#7A6E62", textDecoration: "none",
-                  padding: "13px 24px", border: "1px solid #D4CCC0",
-                  display: "inline-flex", alignItems: "center", gap: 8,
-                }}>
-                  How it works <span style={{ fontSize: 16, lineHeight: 1 }}>↓</span>
+                <a
+                  href="#how"
+                  className="inline-flex items-center gap-2 border border-border px-6 py-3.5 text-[15px] font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-muted/40"
+                >
+                  How it works <span aria-hidden className="text-base leading-none">↓</span>
                 </a>
               </div>
             </div>
 
             <div>
-              <p style={{
-                fontFamily: "var(--font-sans)", fontSize: 20, lineHeight: 1.65,
-                color: "#7A6E62", margin: "0 0 32px", maxWidth: 420,
-              }}>
+              <p className="max-w-md text-lg leading-relaxed text-muted-foreground">
                 Clients, projects, time tracking, and invoices in one place.
                 Built for freelancers who'd rather be working than doing admin.
               </p>
-              <div style={{ display: "flex", gap: 40 }}>
+              <div className="mt-8 flex gap-10 border-t border-border pt-8">
                 {[["Free", "No credit card"], ["2 min", "To set up"], ["OTP", "No password"]].map(([v, l]) => (
                   <div key={l}>
-                    <p style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 20, color: "#1A1208", margin: "0 0 2px", letterSpacing: "-0.5px" }}>{v}</p>
-                    <p style={{ fontFamily: "var(--font-sans)", fontSize: 11, color: "#9A8E82", margin: 0, textTransform: "uppercase", letterSpacing: "0.08em" }}>{l}</p>
+                    <p className="font-heading text-xl font-bold tracking-tight">{v}</p>
+                    <p className="mt-0.5 text-xs uppercase tracking-[0.08em] text-muted-foreground">{l}</p>
                   </div>
                 ))}
               </div>
@@ -88,202 +88,168 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ── INVOICE MOCKUP ── */}
-      <section style={{ padding: "0 48px", borderBottom: "1px solid #D4CCC0" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div style={{
-            background: "#FFFFFF",
-            border: "1px solid #D4CCC0",
-            borderTop: "none",
-            padding: "40px 48px 36px",
-          }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 32, paddingBottom: 24, borderBottom: "1px solid #EDE7D8" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
-                <div>
-                  <p style={{ fontFamily: "var(--font-sans)", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em", color: "#C4B8A8", margin: "0 0 4px" }}>Invoice</p>
-                  <p style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 20, color: "#1A1208", margin: 0, letterSpacing: "-0.5px" }}>INV-0047</p>
-                </div>
-                <div style={{ width: 1, height: 36, background: "#EDE7D8" }} />
-                <div>
-                  <p style={{ fontFamily: "var(--font-sans)", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em", color: "#C4B8A8", margin: "0 0 4px" }}>From</p>
-                  <p style={{ fontFamily: "var(--font-sans)", fontWeight: 600, fontSize: 14, color: "#1A1208", margin: 0 }}>Shrvan Benke</p>
-                </div>
-                <div style={{ width: 1, height: 36, background: "#EDE7D8" }} />
-                <div>
-                  <p style={{ fontFamily: "var(--font-sans)", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em", color: "#C4B8A8", margin: "0 0 4px" }}>Bill to</p>
-                  <p style={{ fontFamily: "var(--font-sans)", fontWeight: 600, fontSize: 14, color: "#1A1208", margin: 0 }}>Studio Collective</p>
-                </div>
-                <div style={{ width: 1, height: 36, background: "#EDE7D8" }} />
-                <div>
-                  <p style={{ fontFamily: "var(--font-sans)", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em", color: "#C4B8A8", margin: "0 0 4px" }}>Due date</p>
-                  <p style={{ fontFamily: "var(--font-sans)", fontWeight: 600, fontSize: 14, color: "#1A1208", margin: 0 }}>Jun 15, 2026</p>
-                </div>
+      {/* INVOICE MOCKUP */}
+      <section className="border-b border-border px-6 md:px-12">
+        <div className="mx-auto max-w-6xl border-x border-border">
+          <div className="bg-card p-8 md:p-12">
+            <div className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
+              <div className="flex flex-wrap items-center gap-6 md:gap-8">
+                <MockField label="Invoice" value="INV-0047" big />
+                <div className="hidden md:block h-9 w-px bg-border" />
+                <MockField label="From" value="Shrvan Benke" />
+                <div className="hidden md:block h-9 w-px bg-border" />
+                <MockField label="Bill to" value="Studio Collective" />
+                <div className="hidden md:block h-9 w-px bg-border" />
+                <MockField label="Due date" value="Jun 15, 2026" />
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <span style={{ fontFamily: "var(--font-sans)", fontSize: 11, fontWeight: 700, color: "#B8860B", background: "#FDF5E0", padding: "4px 10px", textTransform: "uppercase", letterSpacing: "0.08em" }}>Sent</span>
-                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <IconLogo size={16} style={{ color: "#9A8E82" }} />
-                  <span style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 13, color: "#9A8E82" }}>bagdaddy</span>
+              <div className="flex items-center gap-3">
+                <span className="border border-border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                  Sent
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <IconLogo size={15} className="text-muted-foreground" />
+                  <span className="font-heading text-xs font-bold text-muted-foreground">bagdaddy</span>
                 </div>
               </div>
             </div>
 
-            <div style={{ marginBottom: 24 }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 80px 100px 80px 120px", gap: 16, paddingBottom: 10, borderBottom: "1px solid #EDE7D8", marginBottom: 8 }}>
+            <div className="mb-6">
+              <div className="grid grid-cols-[1fr_64px_88px_56px_104px] gap-4 border-b border-border pb-2.5 mb-1">
                 {["Description", "Hours", "Rate", "Qty", "Total"].map((h) => (
-                  <p key={h} style={{ fontFamily: "var(--font-sans)", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.1em", color: "#C4B8A8", margin: 0, textAlign: h === "Total" ? "right" : "left" }}>{h}</p>
+                  <p key={h} className={`text-[10px] uppercase tracking-[0.1em] text-muted-foreground ${h === "Total" ? "text-right" : ""}`}>{h}</p>
                 ))}
               </div>
               {[
-                { desc: "Website redesign & development", hours: "40h", rate: "$85/hr", qty: "1", total: "$3,400.00" },
-                { desc: "Brand identity & style guide", hours: "8h", rate: "$120/hr", qty: "1", total: "$960.00" },
+                { desc: "Website redesign & development", hours: "40h", rate: "$85", qty: "1", total: "$3,400.00" },
+                { desc: "Brand identity & style guide", hours: "8h", rate: "$120", qty: "1", total: "$960.00" },
               ].map((row) => (
-                <div key={row.desc} style={{ display: "grid", gridTemplateColumns: "1fr 80px 100px 80px 120px", gap: 16, padding: "12px 0", borderBottom: "1px solid #F5F0E8", alignItems: "center" }}>
-                  <p style={{ fontFamily: "var(--font-sans)", fontSize: 14, color: "#1A1208", margin: 0 }}>{row.desc}</p>
-                  <p style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: "#7A6E62", margin: 0 }}>{row.hours}</p>
-                  <p style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: "#7A6E62", margin: 0 }}>{row.rate}</p>
-                  <p style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: "#7A6E62", margin: 0 }}>{row.qty}</p>
-                  <p style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 14, color: "#1A1208", margin: 0, textAlign: "right" }}>{row.total}</p>
+                <div key={row.desc} className="grid grid-cols-[1fr_64px_88px_56px_104px] gap-4 items-center border-b border-border/60 py-3">
+                  <p className="text-sm">{row.desc}</p>
+                  <p className="text-[13px] text-muted-foreground">{row.hours}</p>
+                  <p className="text-[13px] text-muted-foreground">{row.rate}/hr</p>
+                  <p className="text-[13px] text-muted-foreground">{row.qty}</p>
+                  <p className="font-heading text-sm font-bold text-right">{row.total}</p>
                 </div>
               ))}
             </div>
 
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <p style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: "#9A8E82", margin: 0 }}>
-                Payment terms: Net 30 · Bank transfer accepted
-              </p>
-              <div style={{ display: "flex", alignItems: "baseline", gap: 16 }}>
-                <span style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: "#9A8E82", textTransform: "uppercase", letterSpacing: "0.08em" }}>Total due</span>
-                <span style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 32, color: "#1A1208", letterSpacing: "-1px" }}>$4,360.00</span>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <p className="text-[13px] text-muted-foreground">Payment terms: Net 30 · Bank transfer accepted</p>
+              <div className="flex items-baseline gap-4">
+                <span className="text-[13px] uppercase tracking-[0.08em] text-muted-foreground">Total due</span>
+                <span className="font-heading text-3xl font-extrabold tracking-tight">$4,360.00</span>
               </div>
             </div>
           </div>
-          <p style={{ fontFamily: "var(--font-sans)", fontSize: 12, color: "#C4B8A8", margin: "12px 0 0", textAlign: "center", textTransform: "uppercase", letterSpacing: "0.1em" }}>
-            Your clients see a page like this — no account needed
-          </p>
         </div>
       </section>
+      <p className="bg-background py-4 text-center text-[11px] uppercase tracking-[0.12em] text-muted-foreground border-b border-border">
+        Your clients see a page like this — no account needed
+      </p>
 
-      {/* ── HOW IT WORKS ── */}
-      <section id="how" style={{ padding: "100px 48px", borderBottom: "1px solid #D4CCC0" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div style={{ marginBottom: 64 }}>
-            <p style={{ fontFamily: "var(--font-sans)", fontSize: 11, fontWeight: 600, color: "#B8860B", textTransform: "uppercase", letterSpacing: "0.14em", margin: "0 0 16px" }}>How it works</p>
-            <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: "clamp(36px, 4vw, 60px)", color: "#1A1208", margin: 0, letterSpacing: "-2px", lineHeight: 1 }}>
-              From first client<br />to final payment.
-            </h2>
-          </div>
+      {/* HOW IT WORKS */}
+      <section id="how" className="border-b border-border px-6 md:px-12 py-24">
+        <div className="mx-auto max-w-6xl">
+          <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">How it works</p>
+          <h2 className="font-heading text-[clamp(34px,4vw,56px)] font-extrabold leading-none tracking-tight mb-16">
+            From first client
+            <br />
+            to final payment.
+          </h2>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 0, borderTop: "1px solid #D4CCC0" }}>
-            {[
-              { n: "01", label: "Add client", desc: "Name, email, address — everything in one place." },
-              { n: "02", label: "Create project", desc: "Set a name and hourly rate for the work." },
-              { n: "03", label: "Log hours", desc: "Track time daily against active projects." },
-              { n: "04", label: "Generate invoice", desc: "Auto-fill from logged hours in one click." },
-              { n: "05", label: "Get paid", desc: "Share the link. Client pays. Done." },
-            ].map(({ n, label, desc }, i) => (
-              <div key={n} style={{ padding: "32px 28px 32px 0", borderRight: i < 4 ? "1px solid #D4CCC0" : "none", paddingLeft: i > 0 ? 28 : 0 }}>
-                <p style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 28, color: "#B8860B", margin: "0 0 20px", letterSpacing: "-0.5px" }}>{n}</p>
-                <p style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 16, color: "#1A1208", margin: "0 0 8px", letterSpacing: "-0.2px" }}>{label}</p>
-                <p style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: "#7A6E62", margin: 0, lineHeight: 1.6 }}>{desc}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 border-t border-l border-border">
+            {STEPS.map(({ n, label, desc }) => (
+              <div key={n} className="border-b border-r border-border p-7">
+                <p className="font-heading text-2xl font-extrabold tracking-tight text-foreground/30 mb-5">{n}</p>
+                <p className="font-heading text-base font-bold tracking-tight mb-2">{label}</p>
+                <p className="text-[13px] leading-relaxed text-muted-foreground">{desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── FEATURES ── */}
-      <section style={{ padding: "100px 48px", borderBottom: "1px solid #D4CCC0" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div style={{ marginBottom: 56 }}>
-            <p style={{ fontFamily: "var(--font-sans)", fontSize: 11, fontWeight: 600, color: "#B8860B", textTransform: "uppercase", letterSpacing: "0.14em", margin: "0 0 16px" }}>Features</p>
-            <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: "clamp(36px, 4vw, 60px)", color: "#1A1208", margin: 0, letterSpacing: "-2px", lineHeight: 1 }}>
-              Everything you need.<br />Nothing you don't.
-            </h2>
-          </div>
+      {/* FEATURES */}
+      <section className="border-b border-border px-6 md:px-12 py-24">
+        <div className="mx-auto max-w-6xl">
+          <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Features</p>
+          <h2 className="font-heading text-[clamp(34px,4vw,56px)] font-extrabold leading-none tracking-tight mb-14">
+            Everything you need.
+            <br />
+            Nothing you don't.
+          </h2>
           <FeatureCards />
         </div>
       </section>
 
-      {/* ── STATS STRIP ── */}
-      <section style={{ borderBottom: "1px solid #D4CCC0" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4, 1fr)" }}>
-          {[
-            { icon: UserGroupIcon, headline: "All your clients", sub: "Managed in one place" },
-            { icon: Clock01Icon, headline: "Hours × rate", sub: "Auto-calculated earnings" },
-            { icon: InvoiceIcon, headline: "Send in seconds", sub: "Via shareable link" },
-            { icon: ChartIncreaseIcon, headline: "Know what's owed", sub: "Outstanding at a glance" },
-          ].map(({ icon, headline, sub }, i) => (
-            <div key={headline} style={{
-              padding: "40px 36px",
-              borderRight: i < 3 ? "1px solid #D4CCC0" : "none",
-              display: "flex",
-              flexDirection: "column",
-              gap: 16,
-            }}>
-              <div style={{ width: 40, height: 40, background: "#1A1208", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <HugeiconsIcon icon={icon} size={17} strokeWidth={1.5} style={{ color: "#F5F0E8" }} />
+      {/* STATS STRIP */}
+      <section className="border-b border-border px-6 md:px-12">
+        <div className="mx-auto max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border-x border-border">
+          {STATS.map(({ icon, headline, sub }, i) => (
+            <div
+              key={headline}
+              className={`flex flex-col gap-4 p-8 ${i < STATS.length - 1 ? "border-b lg:border-b-0 lg:border-r border-border" : ""}`}
+            >
+              <div className="flex h-10 w-10 items-center justify-center bg-primary">
+                <HugeiconsIcon icon={icon} size={17} strokeWidth={1.5} className="text-primary-foreground" />
               </div>
               <div>
-                <p style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 15, color: "#1A1208", margin: "0 0 4px", letterSpacing: "-0.2px" }}>{headline}</p>
-                <p style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: "#7A6E62", margin: 0 }}>{sub}</p>
+                <p className="font-heading text-[15px] font-bold tracking-tight">{headline}</p>
+                <p className="mt-1 text-[13px] text-muted-foreground">{sub}</p>
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── CTA ── */}
-      <section style={{ background: "#1A1208", padding: "120px 48px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr auto", alignItems: "center", gap: 64 }}>
+      {/* CTA */}
+      <section className="bg-foreground text-background px-6 md:px-12 py-28">
+        <div className="mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 lg:items-center">
           <div>
-            <p style={{ fontFamily: "var(--font-sans)", fontSize: 11, fontWeight: 600, color: "#6A5A40", textTransform: "uppercase", letterSpacing: "0.14em", margin: "0 0 20px" }}>
+            <p className="mb-5 text-[11px] font-semibold uppercase tracking-[0.14em] text-background/50">
               Ready to get organized?
             </p>
-            <h2 style={{
-              fontFamily: "var(--font-heading)", fontWeight: 900,
-              fontSize: "clamp(48px, 5.5vw, 80px)", color: "#F5F0E8",
-              margin: "0 0 16px", letterSpacing: "-2.5px", lineHeight: 0.95,
-            }}>
-              Your clients<br />
-              <span style={{ color: "#B8860B" }}>owe you.</span>
+            <h2 className="font-heading text-[clamp(44px,5.5vw,76px)] font-extrabold leading-[0.95] tracking-tight">
+              Your clients
+              <br />
+              owe you.
             </h2>
-            <p style={{ fontFamily: "var(--font-sans)", fontSize: 17, color: "#6A5A40", margin: 0, lineHeight: 1.6, maxWidth: 380 }}>
+            <p className="mt-6 max-w-sm text-[17px] leading-relaxed text-background/60">
               Start tracking work and sending invoices. Free. No credit card. No password.
             </p>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 16 }}>
-            <Link href="/login" style={{
-              fontFamily: "var(--font-sans)", fontSize: 16, fontWeight: 700,
-              color: "#1A1208", background: "#F5F0E8", textDecoration: "none",
-              padding: "18px 40px", display: "inline-flex", alignItems: "center", gap: 10,
-              letterSpacing: "-0.2px", whiteSpace: "nowrap",
-            }}>
-              Start free today
-              <span style={{ fontSize: 20, lineHeight: 1 }}>→</span>
+          <div className="flex flex-col items-start lg:items-end gap-4">
+            <Link
+              href="/login"
+              className="inline-flex items-center gap-2.5 bg-background px-9 py-4 text-base font-bold tracking-tight text-foreground transition-opacity hover:opacity-90"
+            >
+              Start free today <span aria-hidden className="text-xl leading-none">→</span>
             </Link>
-            <p style={{ fontFamily: "var(--font-sans)", fontSize: 12, color: "#4A3A28", margin: 0 }}>
-              OTP login — your email is all you need
-            </p>
+            <p className="text-xs text-background/40">OTP login — your email is all you need</p>
           </div>
         </div>
       </section>
 
-      {/* ── FOOTER ── */}
-      <footer style={{ background: "#120E08", padding: "32px 48px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <IconLogo size={18} style={{ color: "#4A3A28" }} />
-            <span style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 15, color: "#4A3A28", letterSpacing: "-0.3px" }}>bagdaddy</span>
+      {/* FOOTER */}
+      <footer className="bg-background border-t border-border px-6 md:px-12 py-8">
+        <div className="mx-auto max-w-6xl flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-2.5">
+            <IconLogo size={18} className="text-muted-foreground" />
+            <span className="font-heading text-[15px] font-bold tracking-tight text-muted-foreground">bagdaddy</span>
           </div>
-          <p style={{ fontFamily: "var(--font-sans)", fontSize: 12, color: "#2E2416", margin: 0, letterSpacing: "0.05em" }}>
-            made for freelancers
-          </p>
-          <p style={{ fontFamily: "var(--font-sans)", fontSize: 12, color: "#2E2416", margin: 0 }}>
-            © {new Date().getFullYear()} bagdaddy
-          </p>
+          <p className="text-xs uppercase tracking-[0.08em] text-muted-foreground">made for freelancers</p>
+          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} bagdaddy</p>
         </div>
       </footer>
+    </div>
+  );
+}
+
+function MockField({ label, value, big }: { label: string; value: string; big?: boolean }) {
+  return (
+    <div>
+      <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground mb-1">{label}</p>
+      <p className={big ? "font-heading text-lg font-bold tracking-tight" : "text-sm font-semibold"}>{value}</p>
     </div>
   );
 }
