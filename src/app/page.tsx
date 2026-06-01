@@ -6,6 +6,18 @@ import { Button } from "@/components/ui/button";
 import { IconLogo } from "@/components/icons";
 import { LandingNav } from "@/components/landing/nav";
 
+const DOT_GRID = {
+  backgroundImage: "radial-gradient(var(--border) 1px, transparent 1px)",
+  backgroundSize: "22px 22px",
+  maskImage: "radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%)",
+  WebkitMaskImage: "radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%)",
+};
+
+const FADE_BOTTOM = {
+  maskImage: "linear-gradient(to bottom, black 55%, transparent 95%)",
+  WebkitMaskImage: "linear-gradient(to bottom, black 55%, transparent 95%)",
+};
+
 export default async function Home() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -16,199 +28,252 @@ export default async function Home() {
       <LandingNav />
 
       {/* HERO */}
-      <section className="border-b border-border px-6 py-32 md:py-48">
-        <div className="mx-auto max-w-6xl">
-          <div className="max-w-2xl mb-16">
-            <h1 className="font-heading font-black text-6xl md:text-7xl leading-tight tracking-tight mb-6">
-              Track work. Get paid.
-            </h1>
-            <p className="text-xl text-muted-foreground leading-relaxed mb-8">
-              Clients, projects, hours, invoices. Everything freelancers need to bill and get paid, in one place.
-            </p>
-            <Button asChild size="lg">
-              <Link href="/login">Get started free</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <section className="relative overflow-hidden border-b border-border">
+        <div aria-hidden className="pointer-events-none absolute inset-0" style={DOT_GRID} />
 
-      {/* INVOICE PREVIEW */}
-      <section className="border-b border-border px-6 py-32 md:py-48">
-        <div className="mx-auto max-w-6xl">
-          <p className="text-sm text-muted-foreground uppercase tracking-widest mb-12">Product</p>
-
-          <div className="rounded-lg border border-border bg-card overflow-hidden shadow-2xl">
-            {/* Header */}
-            <div className="flex items-center justify-between px-8 py-6 border-b border-border bg-muted/30">
-              <div className="flex items-center gap-2">
-                <IconLogo size={24} className="text-foreground" />
-                <span className="font-heading font-bold text-lg">bagdaddy</span>
-              </div>
-              <span className="text-xs font-semibold px-3 py-1.5 bg-primary text-primary-foreground rounded">
-                PAID
+        <div className="relative mx-auto max-w-6xl px-6 pt-28 pb-0 md:pt-40">
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="mb-7 inline-flex items-center gap-2 border border-border bg-card px-3.5 py-1.5">
+              <span className="relative flex size-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-foreground opacity-60" />
+                <span className="relative inline-flex size-1.5 rounded-full bg-foreground" />
               </span>
+              <span className="text-xs tracking-wide text-muted-foreground">Free while in beta</span>
             </div>
 
-            {/* Body */}
-            <div className="p-8 md:p-12 space-y-8">
-              {/* Summary */}
-              <div className="grid grid-cols-3 gap-8">
-                <div>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Invoice</p>
-                  <p className="font-heading font-black text-3xl">INV-0047</p>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Amount</p>
-                  <p className="font-heading font-black text-3xl">$4,360</p>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Due</p>
-                  <p className="text-lg font-medium">Jun 15, 2026</p>
-                </div>
-              </div>
+            <h1 className="font-heading text-5xl font-extrabold leading-[0.95] tracking-tight md:text-7xl">
+              Get paid for
+              <br />
+              every hour you work.
+            </h1>
 
-              {/* Details */}
-              <div className="grid grid-cols-2 gap-8 border-t border-b border-border py-8">
-                <div>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">From</p>
-                  <p className="font-semibold">Shrvan Benke</p>
-                  <p className="text-sm text-muted-foreground">shrvan@studio.co</p>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Bill to</p>
-                  <p className="font-semibold">Studio Collective</p>
-                  <p className="text-sm text-muted-foreground">hi@studioco.xyz</p>
-                </div>
-              </div>
+            <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
+              bagdaddy turns logged hours into invoices, sends them as a link,
+              and tracks who still owes you — so nothing slips through.
+            </p>
 
-              {/* Line items */}
-              <div className="space-y-4">
-                {[
-                  { desc: 'Website redesign & development', h: '40h', rate: '$85/hr', amount: '$3,400' },
-                  { desc: 'Brand identity & style guide', h: '8h', rate: '$120/hr', amount: '$960' }
-                ].map(({ desc, h, rate, amount }) => (
-                  <div key={desc} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
-                    <span className="text-sm">{desc}</span>
-                    <span className="flex gap-6 ml-auto font-mono text-sm text-muted-foreground">
-                      <span className="w-10 text-right">{h}</span>
-                      <span className="w-16 text-right">{rate}</span>
-                      <span className="w-20 text-right font-semibold text-foreground">{amount}</span>
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex items-end justify-between pt-4">
-                <p className="text-sm text-muted-foreground">Net 30 · Bank transfer accepted</p>
-                <div className="text-right">
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Total due</p>
-                  <p className="font-heading font-black text-4xl">$4,360</p>
-                </div>
-              </div>
+            <div className="mt-9 flex items-center justify-center gap-3">
+              <Button asChild size="lg" className="h-11 px-7">
+                <Link href="/login">Start free</Link>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="h-11 px-7">
+                <a href="#how">See how</a>
+              </Button>
             </div>
           </div>
 
-          <p className="text-sm text-muted-foreground mt-8 text-center">
-            Your client sees this when you share the invoice link. Clean, simple, ready to pay.
-          </p>
+          {/* TILTED DASHBOARD MOCKUP */}
+          <div className="mt-20" style={{ perspective: "2200px" }}>
+            <div
+              className="origin-top transform-gpu border border-border bg-card shadow-2xl"
+              style={{ transform: "rotateX(7deg)", ...FADE_BOTTOM }}
+            >
+              <DashboardMockup />
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
-      <section className="border-b border-border px-6 py-32 md:py-48">
+      {/* FEATURES — each card holds a live mini-mockup */}
+      <section id="how" className="border-b border-border px-6 py-24 md:py-32">
         <div className="mx-auto max-w-6xl">
-          <h2 className="font-heading font-black text-5xl md:text-6xl leading-tight tracking-tight mb-16">
-            The flow
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24">
-            <div className="space-y-12">
-              {[
-                { n: '1', title: 'Add clients', desc: 'Name, email, address. Your whole roster in one place.' },
-                { n: '2', title: 'Create projects', desc: 'Set a name and hourly rate for the work.' }
-              ].map(({ n, title, desc }) => (
-                <div key={n} className="flex gap-6">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-border bg-muted/30">
-                    <span className="font-heading font-black text-lg">{n}</span>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-2">{title}</h3>
-                    <p className="text-muted-foreground">{desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="space-y-12">
-              {[
-                { n: '3', title: 'Log hours daily', desc: 'Track time against any project. Takes 30 seconds.' },
-                { n: '4', title: 'Share invoice', desc: 'Copy the link. Send it. They view and pay immediately.' }
-              ].map(({ n, title, desc }) => (
-                <div key={n} className="flex gap-6">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-border bg-muted/30">
-                    <span className="font-heading font-black text-lg">{n}</span>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-2">{title}</h3>
-                    <p className="text-muted-foreground">{desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div className="mb-14 max-w-2xl">
+            <p className="mb-4 text-sm uppercase tracking-widest text-muted-foreground">How it works</p>
+            <h2 className="font-heading text-4xl font-extrabold leading-tight tracking-tight md:text-5xl">
+              Three steps. No spreadsheet.
+            </h2>
           </div>
-        </div>
-      </section>
 
-      {/* STATS */}
-      <section className="border-b border-border px-6 py-32 md:py-48">
-        <div className="mx-auto max-w-6xl">
-          <h2 className="font-heading font-black text-5xl md:text-6xl leading-tight tracking-tight mb-16">
-            Know exactly what's owed.
-          </h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { label: 'Total earned', value: '$48,920' },
-              { label: 'Outstanding invoices', value: '$4,360' },
-              { label: 'Overdue (30+ days)', value: '$800' },
-              { label: 'Active clients', value: '11' }
-            ].map(({ label, value }) => (
-              <div key={label} className="border border-border rounded-lg p-6">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-3">{label}</p>
-                <p className="font-heading font-black text-3xl">{value}</p>
+          <div className="grid grid-cols-1 gap-px overflow-hidden border border-border bg-border lg:grid-cols-3">
+            {/* CARD 1 — hours -> invoice */}
+            <article className="bg-card p-7">
+              <div className="mb-7 border border-border bg-background p-5">
+                <p className="mb-3 text-[10px] uppercase tracking-widest text-muted-foreground">Time logged</p>
+                <div className="space-y-2 font-mono text-xs">
+                  {[["Mon", "6h", "Redesign"], ["Tue", "4h", "Redesign"], ["Wed", "5h", "Redesign"]].map(([d, h, p]) => (
+                    <div key={d} className="flex items-center justify-between text-muted-foreground">
+                      <span>{d}</span>
+                      <span>{p}</span>
+                      <span className="text-foreground">{h}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="my-3 flex items-center justify-center">
+                  <span className="border border-border px-2 py-0.5 text-[10px] uppercase tracking-widest text-muted-foreground">converts to ↓</span>
+                </div>
+                <div className="flex items-center justify-between border-t border-border pt-3 text-xs">
+                  <span>Redesign · 15h</span>
+                  <span className="font-mono font-semibold">$1,275</span>
+                </div>
               </div>
-            ))}
+              <h3 className="mb-2 font-heading text-lg font-bold tracking-tight">Hours become invoices</h3>
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                Log time against a project. One click turns those hours into invoice line items at your rate.
+              </p>
+            </article>
+
+            {/* CARD 2 — public link */}
+            <article className="bg-card p-7">
+              <div className="mb-7 border border-border bg-background p-5">
+                <div className="mb-3 flex items-center justify-between">
+                  <span className="font-mono text-xs font-semibold">INV-0042</span>
+                  <span className="border border-foreground/30 bg-foreground px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-background">Paid</span>
+                </div>
+                <p className="font-heading text-3xl font-extrabold tracking-tight">$2,400</p>
+                <p className="mb-4 text-xs text-muted-foreground">Studio Collective · due Jun 15</p>
+                <div className="flex items-center gap-2 border border-border bg-card px-3 py-2">
+                  <span className="truncate font-mono text-[11px] text-muted-foreground">bagdaddy.app/i/x7k2qa</span>
+                  <span className="ml-auto shrink-0 border border-border px-1.5 py-0.5 text-[10px] uppercase tracking-wider">Copy</span>
+                </div>
+              </div>
+              <h3 className="mb-2 font-heading text-lg font-bold tracking-tight">Send a link, get paid</h3>
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                Every invoice gets a public page. Copy the link, send it — your client views and pays. No account needed.
+              </p>
+            </article>
+
+            {/* CARD 3 — dashboard / overdue */}
+            <article className="bg-card p-7">
+              <div className="mb-7 border border-border bg-background p-5">
+                <p className="mb-3 text-[10px] uppercase tracking-widest text-muted-foreground">This quarter</p>
+                <div className="space-y-3">
+                  {[
+                    ["Earned", "$48,920", false],
+                    ["Outstanding", "$4,360", false],
+                    ["Overdue", "$800", true],
+                  ].map(([label, value, flag]) => (
+                    <div key={label as string} className="flex items-center justify-between">
+                      <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                        {flag ? <span className="size-1.5 rounded-full bg-foreground" /> : null}
+                        {label}
+                      </span>
+                      <span className="font-mono text-sm font-semibold">{value}</span>
+                    </div>
+                  ))}
+                </div>
+                <p className="mt-4 border-t border-border pt-3 text-[10px] uppercase tracking-widest text-muted-foreground">
+                  Overdue flagged automatically
+                </p>
+              </div>
+              <h3 className="mb-2 font-heading text-lg font-bold tracking-tight">Never chase again</h3>
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                The dashboard shows what's earned, outstanding, and overdue. Late invoices flag themselves.
+              </p>
+            </article>
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="px-6 py-32 md:py-48">
-        <div className="mx-auto max-w-3xl text-center space-y-8">
-          <h2 className="font-heading font-black text-5xl md:text-6xl leading-tight tracking-tight">
+      {/* GIANT BRAND CTA */}
+      <section className="relative overflow-hidden bg-foreground text-background">
+        <div className="relative z-10 mx-auto max-w-6xl px-6 pt-24 pb-10 md:pt-32">
+          <h2 className="font-heading text-4xl font-extrabold leading-tight tracking-tight md:text-6xl">
             Your clients owe you.
+            <br />
+            Go collect.
           </h2>
-          <p className="text-xl text-muted-foreground">
-            Start invoicing in minutes. Track who owes what. Get paid.
+          <p className="mt-5 max-w-md text-lg text-background/70">
+            Set up in two minutes. No card, no password — just your email.
           </p>
-          <div>
-            <Button asChild size="lg">
+          <div className="mt-9">
+            <Button asChild size="lg" variant="secondary" className="h-12 px-8 text-base">
               <Link href="/login">Start free</Link>
             </Button>
           </div>
         </div>
+
+        {/* oversized clipped wordmark */}
+        <p
+          aria-hidden
+          className="select-none whitespace-nowrap font-heading font-extrabold leading-none tracking-tighter text-transparent"
+          style={{
+            fontSize: "clamp(120px, 26vw, 380px)",
+            WebkitTextStroke: "1.5px var(--background)",
+            marginTop: "-0.1em",
+            marginBottom: "-0.22em",
+            opacity: 0.25,
+          }}
+        >
+          bagdaddy
+        </p>
       </section>
 
       {/* FOOTER */}
-      <footer className="border-t border-border px-6 py-16">
-        <div className="mx-auto max-w-6xl flex items-center justify-between">
+      <footer className="border-t border-border px-6 py-10">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 sm:flex-row">
           <div className="flex items-center gap-2">
-            <IconLogo size={20} className="text-foreground" />
+            <IconLogo size={18} className="text-muted-foreground" />
             <span className="font-heading font-bold">bagdaddy</span>
           </div>
-          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} · Made for freelancers</p>
+          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} · made for freelancers</p>
         </div>
       </footer>
+    </div>
+  );
+}
+
+function DashboardMockup() {
+  return (
+    <div className="grid grid-cols-[180px_1fr] text-left">
+      {/* sidebar */}
+      <aside className="hidden border-r border-border p-4 sm:block">
+        <div className="mb-6 flex items-center gap-2">
+          <IconLogo size={16} className="text-foreground" />
+          <span className="font-heading text-sm font-bold">bagdaddy</span>
+        </div>
+        <nav className="space-y-1 text-sm">
+          {["Dashboard", "Clients", "Projects", "Time", "Invoices"].map((item, i) => (
+            <div
+              key={item}
+              className={`px-2.5 py-1.5 ${i === 4 ? "bg-muted text-foreground" : "text-muted-foreground"}`}
+            >
+              {item}
+            </div>
+          ))}
+        </nav>
+      </aside>
+
+      {/* main */}
+      <div className="p-6 md:p-8">
+        <div className="mb-6 flex items-end justify-between">
+          <div>
+            <h3 className="font-heading text-xl font-bold tracking-tight">Invoices</h3>
+            <p className="text-xs text-muted-foreground">11 clients · 6 active projects</p>
+          </div>
+          <span className="border border-border px-3 py-1.5 text-xs">New invoice</span>
+        </div>
+
+        <div className="grid grid-cols-3 gap-px overflow-hidden border border-border bg-border">
+          {[["Earned", "$48,920"], ["Outstanding", "$4,360"], ["Overdue", "$800"]].map(([l, v]) => (
+            <div key={l} className="bg-card p-4">
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{l}</p>
+              <p className="mt-1 font-heading text-lg font-bold">{v}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-5 overflow-hidden border border-border">
+          <div className="grid grid-cols-[1fr_auto_auto] gap-4 border-b border-border bg-muted/40 px-4 py-2.5 text-[10px] uppercase tracking-widest text-muted-foreground">
+            <span>Client</span>
+            <span className="w-20 text-right">Amount</span>
+            <span className="w-16 text-right">Status</span>
+          </div>
+          {[
+            ["Studio Collective", "$4,360", "Paid"],
+            ["Northwind Co.", "$2,100", "Sent"],
+            ["Atlas Media", "$1,840", "Overdue"],
+            ["Bright Labs", "$960", "Draft"],
+          ].map(([client, amount, status]) => (
+            <div key={client} className="grid grid-cols-[1fr_auto_auto] items-center gap-4 border-b border-border px-4 py-3 text-sm last:border-b-0">
+              <span>{client}</span>
+              <span className="w-20 text-right font-mono">{amount}</span>
+              <span className="flex w-16 justify-end">
+                <span className="border border-border px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">{status}</span>
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

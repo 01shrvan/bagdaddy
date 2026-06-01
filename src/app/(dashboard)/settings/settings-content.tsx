@@ -20,9 +20,18 @@ export function SettingsContent() {
 
   const [user, setUser] = useState<UserInfo | null>(null);
   const [name, setName] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [confirmEmail, setConfirmEmail] = useState("");
+
+  const updateProfile = useMutation(
+    trpc.users.updateProfile.mutationOptions({
+      onSuccess: async () => {
+        setUser((prev) => (prev ? { ...prev, name: name.trim() } : prev));
+        const supabase = createClient();
+        await supabase.auth.refreshSession();
+      },
+    }),
+  );
 
   useEffect(() => {
     const supabase = createClient();
@@ -50,16 +59,9 @@ export function SettingsContent() {
     }),
   );
 
-  async function handleSave() {
+  function handleSave() {
     if (!name.trim() || name.trim() === user?.name) return;
-    setIsSaving(true);
-    try {
-      await trpc.users.updateProfile.mutate({ name: name.trim() });
-      setUser((prev) => (prev ? { ...prev, name: name.trim() } : prev));
-    } catch (err) {
-      console.error(err);
-    }
-    setIsSaving(false);
+    updateProfile.mutate({ name: name.trim() });
   }
 
   if (!user) {
@@ -102,7 +104,7 @@ export function SettingsContent() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Your name"
-                disabled={isSaving}
+                disabled={updateProfile.isPending}
               />
             </div>
             <div className="space-y-1.5 max-w-sm">
@@ -121,10 +123,10 @@ export function SettingsContent() {
           <div className="px-6 py-4 border-t flex justify-end">
             <Button
               size="sm"
-              disabled={isSaving || !name.trim() || name.trim() === user.name}
+              disabled={updateProfile.isPending || !name.trim() || name.trim() === user.name}
               onClick={handleSave}
             >
-              {isSaving ? "Saving..." : "Save changes"}
+              {updateProfile.isPending ? "Saving..." : "Save changes"}
             </Button>
           </div>
         </div>
