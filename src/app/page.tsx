@@ -228,7 +228,7 @@ export default async function Home() {
 
 function DashboardMockup() {
   return (
-    <div className="grid grid-cols-[180px_1fr] text-left">
+    <div className="grid grid-cols-1 text-left sm:grid-cols-[170px_1fr]">
       {/* sidebar */}
       <aside className="hidden border-r border-border p-4 sm:block">
         <div className="mb-6 flex items-center gap-2">
@@ -248,29 +248,29 @@ function DashboardMockup() {
       </aside>
 
       {/* main */}
-      <div className="p-6 md:p-8">
-        <div className="mb-6 flex items-end justify-between">
-          <div>
-            <h3 className="font-heading text-xl font-bold tracking-tight">Invoices</h3>
-            <p className="text-xs text-muted-foreground">11 clients · 6 active projects</p>
+      <div className="min-w-0 p-4 sm:p-6 md:p-8">
+        <div className="mb-5 flex items-end justify-between gap-3">
+          <div className="min-w-0">
+            <h3 className="font-heading text-lg font-bold tracking-tight sm:text-xl">Invoices</h3>
+            <p className="truncate text-xs text-muted-foreground">11 clients · 6 active projects</p>
           </div>
-          <span className="border border-border px-3 py-1.5 text-xs">New invoice</span>
+          <span className="shrink-0 border border-border px-2.5 py-1.5 text-xs">New invoice</span>
         </div>
 
         <div className="grid grid-cols-3 gap-px overflow-hidden border border-border bg-border">
           {[["Earned", "$48,920"], ["Outstanding", "$4,360"], ["Overdue", "$800"]].map(([l, v]) => (
-            <div key={l} className="bg-card p-4">
-              <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{l}</p>
-              <p className="mt-1 font-heading text-lg font-bold">{v}</p>
+            <div key={l} className="min-w-0 bg-card p-3 sm:p-4">
+              <p className="truncate text-[9px] uppercase tracking-widest text-muted-foreground sm:text-[10px]">{l}</p>
+              <p className="mt-1 font-heading text-sm font-bold sm:text-lg">{v}</p>
             </div>
           ))}
         </div>
 
-        <div className="mt-5 overflow-hidden border border-border">
-          <div className="grid grid-cols-[1fr_auto_auto] gap-4 border-b border-border bg-muted/40 px-4 py-2.5 text-[10px] uppercase tracking-widest text-muted-foreground">
+        <div className="mt-4 overflow-hidden border border-border sm:mt-5">
+          <div className="grid grid-cols-[1fr_auto_auto] gap-3 border-b border-border bg-muted/40 px-3 py-2.5 text-[9px] uppercase tracking-widest text-muted-foreground sm:gap-4 sm:px-4 sm:text-[10px]">
             <span>Client</span>
-            <span className="w-20 text-right">Amount</span>
-            <span className="w-16 text-right">Status</span>
+            <span className="w-14 text-right sm:w-20">Amount</span>
+            <span className="w-14 text-right sm:w-16">Status</span>
           </div>
           {[
             ["Studio Collective", "$4,360", "Paid"],
@@ -278,11 +278,11 @@ function DashboardMockup() {
             ["Atlas Media", "$1,840", "Overdue"],
             ["Bright Labs", "$960", "Draft"],
           ].map(([client, amount, status]) => (
-            <div key={client} className="grid grid-cols-[1fr_auto_auto] items-center gap-4 border-b border-border px-4 py-3 text-sm last:border-b-0">
-              <span>{client}</span>
-              <span className="w-20 text-right font-mono">{amount}</span>
-              <span className="flex w-16 justify-end">
-                <span className="border border-border px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">{status}</span>
+            <div key={client} className="grid grid-cols-[1fr_auto_auto] items-center gap-3 border-b border-border px-3 py-2.5 text-xs last:border-b-0 sm:gap-4 sm:px-4 sm:py-3 sm:text-sm">
+              <span className="truncate">{client}</span>
+              <span className="w-14 text-right font-mono sm:w-20">{amount}</span>
+              <span className="flex w-14 justify-end sm:w-16">
+                <span className="border border-border px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-muted-foreground sm:text-[10px]">{status}</span>
               </span>
             </div>
           ))}
