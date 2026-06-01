@@ -13,7 +13,9 @@ const FADE_BOTTOM = {
 
 export default async function Home() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (user) redirect("/dashboard");
 
   return (
@@ -42,7 +44,12 @@ export default async function Home() {
                 <Button asChild size="lg" className="h-12 px-8 text-base">
                   <Link href="/login">Start free</Link>
                 </Button>
-                <Button asChild variant="outline" size="lg" className="h-12 px-8 text-base">
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="h-12 px-8 text-base"
+                >
                   <a href="#how">See how it works</a>
                 </Button>
               </div>
@@ -56,8 +63,12 @@ export default async function Home() {
                 <p className="mb-4 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
                   This quarter
                 </p>
-                <p className="font-heading text-5xl font-extrabold tracking-tight">$48,920</p>
-                <p className="mt-1 text-sm text-muted-foreground">earned across 11 clients</p>
+                <p className="font-heading text-5xl font-extrabold tracking-tight">
+                  $48,920
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  earned across 11 clients
+                </p>
                 <div className="mt-6 space-y-3 border-t border-border pt-5">
                   {[
                     ["Outstanding", "$4,360", "60%"],
@@ -69,7 +80,10 @@ export default async function Home() {
                         <span className="font-mono font-medium">{value}</span>
                       </div>
                       <div className="h-1 w-full bg-muted">
-                        <div className="h-full bg-foreground" style={{ width: w }} />
+                        <div
+                          className="h-full bg-foreground"
+                          style={{ width: w }}
+                        />
                       </div>
                     </div>
                   ))}
@@ -112,7 +126,10 @@ export default async function Home() {
                     ["Tue", "4h", "Redesign"],
                     ["Wed", "5h", "Redesign"],
                   ].map(([d, h, p]) => (
-                    <div key={d} className="flex items-center justify-between text-muted-foreground">
+                    <div
+                      key={d}
+                      className="flex items-center justify-between text-muted-foreground"
+                    >
                       <span>{d}</span>
                       <span>{p}</span>
                       <span className="text-foreground">{h}</span>
@@ -141,13 +158,19 @@ export default async function Home() {
             <article className="bg-card p-7">
               <div className="mb-7 border border-border bg-background p-5">
                 <div className="mb-3 flex items-center justify-between">
-                  <span className="font-mono text-xs font-semibold">INV-0042</span>
+                  <span className="font-mono text-xs font-semibold">
+                    INV-0042
+                  </span>
                   <span className="border border-foreground/30 bg-foreground px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-background">
                     Paid
                   </span>
                 </div>
-                <p className="font-heading text-3xl font-extrabold tracking-tight">$2,400</p>
-                <p className="mb-4 text-xs text-muted-foreground">Studio Collective · due Jun 15</p>
+                <p className="font-heading text-3xl font-extrabold tracking-tight">
+                  $2,400
+                </p>
+                <p className="mb-4 text-xs text-muted-foreground">
+                  Studio Collective · due Jun 15
+                </p>
                 <div className="flex items-center gap-2 border border-border bg-card px-3 py-2">
                   <span className="truncate font-mono text-[11px] text-muted-foreground">
                     bagdaddy.app/i/x7k2qa
@@ -177,12 +200,19 @@ export default async function Home() {
                     ["Outstanding", "$4,360", false],
                     ["Overdue", "$800", true],
                   ].map(([label, value, flag]) => (
-                    <div key={label as string} className="flex items-center justify-between">
+                    <div
+                      key={label as string}
+                      className="flex items-center justify-between"
+                    >
                       <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                        {flag ? <span className="size-1.5 rounded-full bg-foreground" /> : null}
+                        {flag ? (
+                          <span className="size-1.5 rounded-full bg-foreground" />
+                        ) : null}
                         {label}
                       </span>
-                      <span className="font-mono text-sm font-semibold">{value}</span>
+                      <span className="font-mono text-sm font-semibold">
+                        {value}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -194,8 +224,8 @@ export default async function Home() {
                 Never chase again
               </h3>
               <p className="text-sm leading-relaxed text-muted-foreground">
-                The dashboard shows what's earned, outstanding, and overdue. Late
-                invoices flag themselves.
+                The dashboard shows what's earned, outstanding, and overdue.
+                Late invoices flag themselves.
               </p>
             </article>
           </div>
@@ -213,7 +243,12 @@ export default async function Home() {
             Set up in two minutes. No card, no password — just your email.
           </p>
           <div className="mt-9">
-            <Button asChild size="lg" variant="secondary" className="h-12 px-8 text-base">
+            <Button
+              asChild
+              size="lg"
+              variant="secondary"
+              className="h-12 px-8 text-base"
+            >
               <Link href="/login">Start free</Link>
             </Button>
           </div>
@@ -254,7 +289,9 @@ export default async function Home() {
             <IconLogo size={18} className="text-muted-foreground" />
             <span className="font-heading font-bold">bagdaddy</span>
           </div>
-          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} · made for freelancers</p>
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} · made for freelancers
+          </p>
         </div>
       </footer>
     </div>
@@ -270,31 +307,47 @@ function DashboardMockup() {
           <span className="font-heading text-sm font-bold">bagdaddy</span>
         </div>
         <nav className="space-y-1 text-sm">
-          {["Dashboard", "Clients", "Projects", "Time", "Invoices"].map((item, i) => (
-            <div
-              key={item}
-              className={`px-2.5 py-1.5 ${i === 4 ? "bg-muted text-foreground" : "text-muted-foreground"}`}
-            >
-              {item}
-            </div>
-          ))}
+          {["Dashboard", "Clients", "Projects", "Time", "Invoices"].map(
+            (item, i) => (
+              <div
+                key={item}
+                className={`px-2.5 py-1.5 ${i === 4 ? "bg-muted text-foreground" : "text-muted-foreground"}`}
+              >
+                {item}
+              </div>
+            ),
+          )}
         </nav>
       </aside>
 
       <div className="min-w-0 p-4 sm:p-6 md:p-8">
         <div className="mb-5 flex items-end justify-between gap-3">
           <div className="min-w-0">
-            <h3 className="font-heading text-lg font-bold tracking-tight sm:text-xl">Invoices</h3>
-            <p className="truncate text-xs text-muted-foreground">11 clients · 6 active projects</p>
+            <h3 className="font-heading text-lg font-bold tracking-tight sm:text-xl">
+              Invoices
+            </h3>
+            <p className="truncate text-xs text-muted-foreground">
+              11 clients · 6 active projects
+            </p>
           </div>
-          <span className="shrink-0 border border-border px-2.5 py-1.5 text-xs">New invoice</span>
+          <span className="shrink-0 border border-border px-2.5 py-1.5 text-xs">
+            New invoice
+          </span>
         </div>
 
         <div className="grid grid-cols-3 gap-px overflow-hidden border border-border bg-border">
-          {[["Earned", "$48,920"], ["Outstanding", "$4,360"], ["Overdue", "$800"]].map(([l, v]) => (
+          {[
+            ["Earned", "$48,920"],
+            ["Outstanding", "$4,360"],
+            ["Overdue", "$800"],
+          ].map(([l, v]) => (
             <div key={l} className="min-w-0 bg-card p-3 sm:p-4">
-              <p className="truncate text-[9px] uppercase tracking-widest text-muted-foreground sm:text-[10px]">{l}</p>
-              <p className="mt-1 font-heading text-sm font-bold sm:text-lg">{v}</p>
+              <p className="truncate text-[9px] uppercase tracking-widest text-muted-foreground sm:text-[10px]">
+                {l}
+              </p>
+              <p className="mt-1 font-heading text-sm font-bold sm:text-lg">
+                {v}
+              </p>
             </div>
           ))}
         </div>
@@ -311,11 +364,18 @@ function DashboardMockup() {
             ["Atlas Media", "$1,840", "Overdue"],
             ["Bright Labs", "$960", "Draft"],
           ].map(([client, amount, status]) => (
-            <div key={client} className="grid grid-cols-[1fr_auto_auto] items-center gap-3 border-b border-border px-3 py-2.5 text-xs last:border-b-0 sm:gap-4 sm:px-4 sm:py-3 sm:text-sm">
+            <div
+              key={client}
+              className="grid grid-cols-[1fr_auto_auto] items-center gap-3 border-b border-border px-3 py-2.5 text-xs last:border-b-0 sm:gap-4 sm:px-4 sm:py-3 sm:text-sm"
+            >
               <span className="truncate">{client}</span>
-              <span className="w-14 text-right font-mono sm:w-20">{amount}</span>
+              <span className="w-14 text-right font-mono sm:w-20">
+                {amount}
+              </span>
               <span className="flex w-14 justify-end sm:w-16">
-                <span className="border border-border px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-muted-foreground sm:text-[10px]">{status}</span>
+                <span className="border border-border px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-muted-foreground sm:text-[10px]">
+                  {status}
+                </span>
               </span>
             </div>
           ))}

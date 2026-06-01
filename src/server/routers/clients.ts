@@ -1,7 +1,7 @@
 import { router, protectedProcedure } from "@/server/trpc";
 import { db } from "@/lib/db";
-import { clients } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import { clients, projects, invoices, timeEntries } from "@/lib/db/schema";
+import { eq, and, inArray, count } from "drizzle-orm";
 import { z } from "zod/v4";
 
 export const clientsRouter = router({
@@ -41,6 +41,24 @@ export const clientsRouter = router({
         .where(and(eq(clients.id, input.id), eq(clients.userId, ctx.user.id)))
         .returning();
       return client;
+    }),
+
+  relatedCounts: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const [client] = await db.select({ id: clients.id }).from(clients)
+        .where(and(eq(clients.id, input.id), eq(clients.userId, ctx.user.id)));
+      if (!client) return { projects: 0, timeEntries: 0, invoices: 0 };
+
+      const projectIds = db.select({ id: projects.id }).from(projects).where(eq(projects.clientId, input.id));
+
+      const [[p], [inv], [te]] = await Promise.all([
+        db.select({ c: count() }).from(projects).where(eq(projects.clientId, input.id)),
+        db.select({ c: count() }).from(invoices).where(eq(invoices.clientId, input.id)),
+        db.select({ c: count() }).from(timeEntries).where(inArray(timeEntries.projectId, projectIds)),
+      ]);
+
+      return { projects: p.c, invoices: inv.c, timeEntries: te.c };
     }),
 
   delete: protectedProcedure
