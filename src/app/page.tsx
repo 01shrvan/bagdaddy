@@ -16,93 +16,126 @@ export default async function Home() {
       <LandingNav />
 
       {/* HERO */}
-      <section className="border-b border-border px-6 py-24 md:py-32">
-        <div className="mx-auto max-w-4xl">
-          <p className="mb-4 text-sm text-muted-foreground">Freelance finance simplified</p>
-          <h1 className="mb-6 font-heading text-5xl font-extrabold leading-tight tracking-tight md:text-6xl">
-            Track your work.
-            <br />
-            Get paid.
-          </h1>
-          <p className="mb-8 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            Clients, projects, time tracking, and invoices — all in one place.
-            Log hours, generate invoices, and send shareable links. No spreadsheets, no friction.
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <Button asChild size="lg">
-              <Link href="/login">Start free</Link>
-            </Button>
-            <Button asChild variant="outline" size="lg">
-              <a href="#features">Learn more</a>
-            </Button>
+      <section className="overflow-hidden border-b border-border">
+        <div className="mx-auto max-w-6xl px-6 py-32 md:py-48">
+          <div className="grid grid-cols-1 gap-16 md:grid-cols-2 md:gap-12 md:items-center">
+            <div>
+              <p className="mb-6 inline-block border border-border bg-muted/30 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-muted-foreground">
+                For freelancers
+              </p>
+              <h1 className="mb-6 font-heading text-5xl font-extrabold leading-tight tracking-tight md:text-6xl">
+                Stop chasing invoices.
+              </h1>
+              <p className="mb-10 text-lg leading-relaxed text-muted-foreground">
+                Log hours. Generate invoices. Share a link. Get paid.
+                Everything for freelance billing, kept simple and fast.
+              </p>
+              <div className="flex gap-3">
+                <Button asChild size="lg">
+                  <Link href="/login">Start free</Link>
+                </Button>
+              </div>
+              <p className="mt-6 text-sm text-muted-foreground">No card. No password. Email only.</p>
+            </div>
+
+            {/* STATS PREVIEW */}
+            <div className="hidden md:block">
+              <div className="space-y-4 rounded-lg border border-border bg-card p-8">
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide">Total earned</p>
+                  <p className="mt-2 font-heading text-4xl font-bold">$48,920</p>
+                </div>
+                <div className="border-t border-border pt-4">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide">Outstanding</p>
+                  <p className="mt-2 font-heading text-2xl font-bold text-muted-foreground">$4,360</p>
+                </div>
+                <div className="border-t border-border pt-4">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide">Active projects</p>
+                  <p className="mt-2 font-heading text-2xl font-bold">6</p>
+                </div>
+              </div>
+            </div>
           </div>
-          <p className="mt-6 text-sm text-muted-foreground">
-            Free. No credit card. Email login only.
-          </p>
         </div>
       </section>
 
-      {/* PRODUCT SHOWCASE */}
+      {/* INVOICE EXAMPLE */}
       <section className="border-b border-border px-6 py-24 md:py-32">
-        <div className="mx-auto max-w-5xl">
-          <div className="mb-8 space-y-2">
-            <h2 className="font-heading text-3xl font-bold">What your client sees</h2>
-            <p className="text-muted-foreground">A clean invoice page. They view, they pay. No account needed.</p>
+        <div className="mx-auto max-w-4xl">
+          <div className="mb-12">
+            <h2 className="mb-4 font-heading text-3xl font-bold">Your clients see this</h2>
+            <p className="max-w-xl text-muted-foreground">A clean, branded invoice page. They click. They pay. No account needed.</p>
           </div>
-          <div className="border border-border bg-card">
-            <div className="flex items-center justify-between border-b border-border px-8 py-5">
+
+          <div className="overflow-hidden border border-border bg-card">
+            {/* HEADER */}
+            <div className="flex items-center justify-between border-b border-border px-8 py-6">
+              <div className="flex items-center gap-3">
+                <IconLogo size={20} className="text-foreground" />
+                <span className="font-heading text-lg font-bold">bagdaddy</span>
+              </div>
               <div className="flex items-center gap-2">
-                <IconLogo size={16} className="text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">bagdaddy</span>
+                <span className="inline-block border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-600">
+                  PAID
+                </span>
               </div>
-              <span className="text-xs text-muted-foreground">Sent</span>
             </div>
-            <div className="space-y-8 px-8 py-8 md:py-12">
-              <div className="grid grid-cols-2 gap-8">
+
+            {/* CONTENT */}
+            <div className="px-8 py-8 md:py-12">
+              <div className="mb-8 grid grid-cols-3 gap-6">
                 <div>
-                  <p className="mb-1 text-xs text-muted-foreground">Invoice</p>
-                  <p className="text-2xl font-bold">INV-0047</p>
+                  <p className="mb-2 text-xs uppercase text-muted-foreground">Invoice number</p>
+                  <p className="font-heading text-3xl font-bold">0047</p>
                 </div>
-                <div className="text-right">
-                  <p className="mb-1 text-xs text-muted-foreground">Due</p>
-                  <p className="text-sm font-semibold">Jun 15, 2026</p>
+                <div>
+                  <p className="mb-2 text-xs uppercase text-muted-foreground">Amount due</p>
+                  <p className="font-heading text-3xl font-bold">$4,360</p>
+                </div>
+                <div>
+                  <p className="mb-2 text-xs uppercase text-muted-foreground">Due date</p>
+                  <p className="text-lg">Jun 15, 2026</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-8 border-t border-border pt-8">
+              <div className="mb-8 grid grid-cols-2 gap-8 border-y border-border py-8">
                 <div>
-                  <p className="mb-2 text-xs text-muted-foreground">From</p>
+                  <p className="mb-2 text-xs uppercase text-muted-foreground">From</p>
                   <p className="font-semibold">Shrvan Benke</p>
-                  <p className="text-sm text-muted-foreground">shrvan@studio.co</p>
+                  <p className="text-sm text-muted-foreground">Studio lead & designer</p>
                 </div>
                 <div>
-                  <p className="mb-2 text-xs text-muted-foreground">Bill to</p>
+                  <p className="mb-2 text-xs uppercase text-muted-foreground">Bill to</p>
                   <p className="font-semibold">Studio Collective</p>
-                  <p className="text-sm text-muted-foreground">hi@studioco.xyz</p>
+                  <p className="text-sm text-muted-foreground">Creative agency</p>
                 </div>
               </div>
 
-              <div className="border-t border-border pt-8">
+              {/* LINE ITEMS */}
+              <div className="mb-8 space-y-4">
                 {[
-                  ["Website redesign & development", "40h", "$85", "$3,400.00"],
-                  ["Brand identity system", "8h", "$120", "$960.00"],
-                ].map(([desc, qty, rate, amount]) => (
-                  <div key={desc} className="flex items-center justify-between border-b border-border py-3 last:border-b-0">
-                    <span className="text-sm">{desc}</span>
-                    <span className="ml-auto flex w-32 items-center justify-end gap-4 font-mono text-sm text-muted-foreground">
-                      <span>{qty}</span>
-                      <span>{rate}</span>
+                  { work: "Website redesign & development", hrs: 40, rate: "$85/hr", total: "$3,400" },
+                  { work: "Brand identity & style guide", hrs: 8, rate: "$120/hr", total: "$960" },
+                ].map(({ work, hrs, rate, total }) => (
+                  <div key={work} className="flex items-center justify-between py-2">
+                    <span className="text-sm">{work}</span>
+                    <span className="ml-auto flex gap-8 font-mono text-sm text-muted-foreground">
+                      <span className="w-12 text-right">{hrs}h</span>
+                      <span className="w-16 text-right">{rate}</span>
                     </span>
-                    <span className="ml-4 w-24 text-right font-semibold">{amount}</span>
+                    <span className="ml-8 w-20 text-right font-semibold">{total}</span>
                   </div>
                 ))}
               </div>
 
-              <div className="flex items-end justify-between border-t border-border pt-8">
-                <p className="text-sm text-muted-foreground">Net 30 · Bank transfer accepted</p>
+              <div className="flex items-end justify-between border-t border-border pt-6">
+                <div>
+                  <p className="text-xs text-muted-foreground">Payment method: Bank transfer</p>
+                  <p className="text-xs text-muted-foreground">Terms: Net 30</p>
+                </div>
                 <div className="text-right">
-                  <p className="mb-1 text-xs text-muted-foreground">Total due</p>
-                  <p className="text-4xl font-bold">$4,360</p>
+                  <p className="mb-1 text-xs uppercase text-muted-foreground">Total</p>
+                  <p className="font-heading text-4xl font-bold">$4,360</p>
                 </div>
               </div>
             </div>
@@ -110,23 +143,25 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
-      <section id="features" className="border-b border-border px-6 py-24 md:py-32">
+      {/* THE FLOW */}
+      <section className="border-b border-border px-6 py-24 md:py-32">
         <div className="mx-auto max-w-4xl">
-          <h2 className="mb-12 font-heading text-3xl font-bold">Five simple steps</h2>
-          <div className="space-y-8">
+          <h2 className="mb-16 font-heading text-3xl font-bold">The flow</h2>
+
+          <div className="space-y-12">
             {[
-              { n: "01", label: "Add clients", desc: "Name, email, address. Your whole roster in one place." },
-              { n: "02", label: "Create projects", desc: "Give each a name and hourly rate." },
-              { n: "03", label: "Log hours daily", desc: "Track time against any active project." },
-              { n: "04", label: "Generate invoices", desc: "Hours auto-fill as line items. One click." },
-              { n: "05", label: "Get paid", desc: "Share the link. They view, they pay." },
-            ].map(({ n, label, desc }) => (
+              { n: "1", title: "Add clients", desc: "Email, address, rate. Your roster." },
+              { n: "2", title: "Log hours daily", desc: "Against any project. Takes 30 seconds." },
+              { n: "3", title: "Generate invoice", desc: "Hours auto-fill as line items." },
+              { n: "4", title: "Share the link", desc: "Copy. Send. They view. They pay." },
+            ].map(({ n, title, desc }) => (
               <div key={n} className="flex gap-8">
-                <span className="mt-1 font-mono text-sm font-medium text-muted-foreground">{n}</span>
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded border border-border">
+                  <span className="font-heading text-lg font-bold">{n}</span>
+                </div>
                 <div>
-                  <h3 className="font-semibold">{label}</h3>
-                  <p className="text-sm text-muted-foreground">{desc}</p>
+                  <h3 className="mb-1 font-semibold">{title}</h3>
+                  <p className="text-muted-foreground">{desc}</p>
                 </div>
               </div>
             ))}
@@ -134,27 +169,27 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="px-6 py-24 md:py-32">
+      {/* FOOTER CTA */}
+      <section className="px-6 py-32">
         <div className="mx-auto max-w-4xl text-center">
-          <h2 className="mb-4 font-heading text-4xl font-bold">Ready to get paid?</h2>
-          <p className="mb-8 text-lg text-muted-foreground">
-            Start tracking work and sending invoices in minutes.
+          <h2 className="mb-4 font-heading text-5xl font-bold">Your clients owe you.</h2>
+          <p className="mb-10 text-xl text-muted-foreground">
+            Start invoicing in minutes. Keep track of who owes what.
           </p>
           <Button asChild size="lg">
-            <Link href="/login">Start free today</Link>
+            <Link href="/login">Start free</Link>
           </Button>
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer className="border-t border-border px-6 py-8">
+      <footer className="border-t border-border px-6 py-12">
         <div className="mx-auto flex max-w-6xl items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <IconLogo size={18} className="text-muted-foreground" />
-            <span className="text-sm font-medium text-muted-foreground">bagdaddy</span>
+            <span className="font-heading font-bold">bagdaddy</span>
           </div>
-          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} · made for freelancers</p>
+          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} · Made for freelancers</p>
         </div>
       </footer>
     </div>
