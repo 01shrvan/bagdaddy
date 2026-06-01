@@ -55,7 +55,11 @@ export function SettingsContent() {
     setIsSaving(true);
     const supabase = createClient();
     await supabase.auth.updateUser({ data: { full_name: name.trim() } });
-    setUser((prev) => (prev ? { ...prev, name: name.trim() } : prev));
+    const { data } = await supabase.auth.getUser();
+    if (data.user) {
+      const updated = data.user.user_metadata?.full_name ?? name.trim();
+      setUser((prev) => (prev ? { ...prev, name: updated } : prev));
+    }
     setIsSaving(false);
   }
 
