@@ -12,212 +12,146 @@ export default async function Home() {
   if (user) redirect("/dashboard");
 
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-      <style>{`
-        @keyframes slideInUp { from { opacity: 0; transform: translateY(40px) } to { opacity: 1; transform: translateY(0) } }
-        @keyframes float { 0%, 100% { transform: translateY(0px) } 50% { transform: translateY(-8px) } }
-        @keyframes rotate3d { from { transform: perspective(1200px) rotateY(0deg) } to { transform: perspective(1200px) rotateY(2deg) } }
-        .animate-in { animation: slideInUp 0.6s ease-out forwards; }
-        .animate-float { animation: float 4s ease-in-out infinite; }
-        .animate-rotate { animation: rotate3d 6s ease-in-out infinite; }
-        .invoice-card { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        .invoice-card:hover { transform: translateY(-4px); }
-      `}</style>
-
+    <div className="min-h-screen bg-background text-foreground">
       <LandingNav />
 
-      {/* HERO - Asymmetric layout */}
-      <section className="relative border-b border-border overflow-hidden">
-        <div className="mx-auto max-w-7xl px-6 py-32 md:py-48">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 items-start">
-            {/* LEFT: Text - spans 1.5 columns visually */}
-            <div className="lg:col-span-2 space-y-8">
-              <div className="space-y-4">
-                <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono">
-                  ← the problem
-                </p>
-                <h1 className="font-heading font-black leading-[0.95] tracking-tight" style={{ fontSize: 'clamp(48px, 12vw, 96px)' }}>
-                  You're losing
-                  <br />
-                  <span className="text-muted-foreground">thousands</span>
-                  <br />
-                  chasing invoices.
-                </h1>
-              </div>
-
-              <p className="max-w-sm text-lg leading-relaxed text-muted-foreground">
-                Spreadsheets don't track hours. Google Docs aren't invoices. Email threads disappear. You end up chasing clients for money you already earned.
-              </p>
-
-              <div className="pt-4 space-y-4">
-                <Button asChild size="lg" className="group">
-                  <Link href="/login">
-                    Get started free
-                    <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
-                  </Link>
-                </Button>
-                <p className="text-xs text-muted-foreground">No credit card. No password.</p>
-              </div>
-            </div>
-
-            {/* RIGHT: Visual - earnings card, floating */}
-            <div className="hidden lg:block relative h-96">
-              <div className="absolute inset-0 pointer-events-none" style={{
-                background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.05) 0%, transparent 60%)'
-              }} />
-
-              <div className="animate-float absolute right-0 top-0 w-80 space-y-3 rounded-lg border border-border bg-card p-6 shadow-lg">
-                <div className="space-y-1">
-                  <p className="text-xs uppercase text-muted-foreground tracking-wider">This month</p>
-                  <p className="font-heading text-4xl font-black">$12,840</p>
-                </div>
-                <div className="border-t border-border pt-3 space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-muted-foreground">Earned</span>
-                    <span className="text-sm font-semibold">$12,840</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-muted-foreground">Outstanding</span>
-                    <span className="text-sm font-semibold text-destructive">$4,200</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-muted-foreground">Overdue</span>
-                    <span className="text-sm font-semibold text-destructive">$800</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+      {/* HERO */}
+      <section className="border-b border-border px-6 py-32 md:py-48">
+        <div className="mx-auto max-w-6xl">
+          <div className="max-w-2xl mb-16">
+            <h1 className="font-heading font-black text-6xl md:text-7xl leading-tight tracking-tight mb-6">
+              Track work. Get paid.
+            </h1>
+            <p className="text-xl text-muted-foreground leading-relaxed mb-8">
+              Clients, projects, hours, invoices. Everything freelancers need to bill and get paid, in one place.
+            </p>
+            <Button asChild size="lg">
+              <Link href="/login">Get started free</Link>
+            </Button>
           </div>
         </div>
       </section>
 
-      {/* SOLUTION - Invoice showcase with overlap */}
-      <section className="border-b border-border relative overflow-hidden">
-        <div className="mx-auto max-w-7xl px-6 py-32 md:py-48">
-          <div className="space-y-12">
-            <div>
-              <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-4">
-                → the solution
-              </p>
-              <h2 className="font-heading font-black text-5xl md:text-6xl leading-tight tracking-tight">
-                One link.
-                <br />
-                One click.
-                <br />
-                Paid.
-              </h2>
+      {/* INVOICE PREVIEW */}
+      <section className="border-b border-border px-6 py-32 md:py-48">
+        <div className="mx-auto max-w-6xl">
+          <p className="text-sm text-muted-foreground uppercase tracking-widest mb-12">Product</p>
+
+          <div className="rounded-lg border border-border bg-card overflow-hidden shadow-2xl">
+            {/* Header */}
+            <div className="flex items-center justify-between px-8 py-6 border-b border-border bg-muted/30">
+              <div className="flex items-center gap-2">
+                <IconLogo size={24} className="text-foreground" />
+                <span className="font-heading font-bold text-lg">bagdaddy</span>
+              </div>
+              <span className="text-xs font-semibold px-3 py-1.5 bg-primary text-primary-foreground rounded">
+                PAID
+              </span>
             </div>
 
-            {/* Invoice - Asymmetric placement */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-              <div className="lg:col-span-7">
-                <div className="invoice-card rounded-lg border border-border bg-card overflow-hidden shadow-xl">
-                  {/* Invoice Header */}
-                  <div className="bg-muted/30 px-8 py-6 flex items-center justify-between border-b border-border">
-                    <div className="flex items-center gap-2">
-                      <IconLogo size={22} className="text-foreground" />
-                      <span className="font-heading font-bold">bagdaddy</span>
-                    </div>
-                    <span className="inline-block bg-emerald-500/15 text-emerald-600 text-xs font-bold px-2.5 py-1.5 rounded border border-emerald-500/30">
-                      PAID
+            {/* Body */}
+            <div className="p-8 md:p-12 space-y-8">
+              {/* Summary */}
+              <div className="grid grid-cols-3 gap-8">
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Invoice</p>
+                  <p className="font-heading font-black text-3xl">INV-0047</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Amount</p>
+                  <p className="font-heading font-black text-3xl">$4,360</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Due</p>
+                  <p className="text-lg font-medium">Jun 15, 2026</p>
+                </div>
+              </div>
+
+              {/* Details */}
+              <div className="grid grid-cols-2 gap-8 border-t border-b border-border py-8">
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">From</p>
+                  <p className="font-semibold">Shrvan Benke</p>
+                  <p className="text-sm text-muted-foreground">shrvan@studio.co</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Bill to</p>
+                  <p className="font-semibold">Studio Collective</p>
+                  <p className="text-sm text-muted-foreground">hi@studioco.xyz</p>
+                </div>
+              </div>
+
+              {/* Line items */}
+              <div className="space-y-4">
+                {[
+                  { desc: 'Website redesign & development', h: '40h', rate: '$85/hr', amount: '$3,400' },
+                  { desc: 'Brand identity & style guide', h: '8h', rate: '$120/hr', amount: '$960' }
+                ].map(({ desc, h, rate, amount }) => (
+                  <div key={desc} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
+                    <span className="text-sm">{desc}</span>
+                    <span className="flex gap-6 ml-auto font-mono text-sm text-muted-foreground">
+                      <span className="w-10 text-right">{h}</span>
+                      <span className="w-16 text-right">{rate}</span>
+                      <span className="w-20 text-right font-semibold text-foreground">{amount}</span>
                     </span>
                   </div>
-
-                  {/* Invoice Body */}
-                  <div className="p-8 space-y-6">
-                    <div className="grid grid-cols-3 gap-4">
-                      <div>
-                        <p className="text-xs uppercase text-muted-foreground font-mono mb-2">Invoice</p>
-                        <p className="font-heading text-3xl font-black">0047</p>
-                      </div>
-                      <div>
-                        <p className="text-xs uppercase text-muted-foreground font-mono mb-2">Amount</p>
-                        <p className="font-heading text-3xl font-black">$4,360</p>
-                      </div>
-                      <div>
-                        <p className="text-xs uppercase text-muted-foreground font-mono mb-2">Due</p>
-                        <p className="font-mono text-sm">Jun 15</p>
-                      </div>
-                    </div>
-
-                    <div className="border-t border-b border-border py-6 space-y-3">
-                      {[
-                        { desc: 'Website redesign', h: '40h', rate: '$85', amt: '$3,400' },
-                        { desc: 'Brand system', h: '8h', rate: '$120', amt: '$960' }
-                      ].map(({ desc, h, rate, amt }) => (
-                        <div key={desc} className="flex items-center justify-between text-sm">
-                          <span>{desc}</span>
-                          <span className="ml-auto flex gap-6 text-muted-foreground font-mono text-xs">
-                            <span className="w-8 text-right">{h}</span>
-                            <span className="w-12 text-right">{rate}</span>
-                            <span className="w-16 text-right font-semibold text-foreground">{amt}</span>
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-muted-foreground">Net 30 • Bank transfer</span>
-                      <span className="font-heading font-black text-lg">$4,360</span>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
 
-              {/* RIGHT: Copy + CTA */}
-              <div className="lg:col-span-5 space-y-6">
-                <div className="space-y-3">
-                  <p className="text-sm uppercase text-muted-foreground tracking-wider font-mono">What it does</p>
-                  <h3 className="font-heading font-black text-3xl leading-tight">
-                    Your client gets this.
-                  </h3>
-                  <p className="text-base leading-relaxed text-muted-foreground">
-                    A clean, branded invoice page. No account. No friction. They view it, they pay it. That's it.
-                  </p>
-                </div>
-
-                <div className="space-y-3 pt-4">
-                  <p className="text-xs uppercase text-muted-foreground tracking-wider font-mono">The flow</p>
-                  <ul className="space-y-2 text-sm">
-                    {['Log hours daily', 'Generate invoice', 'Copy the link', 'They pay'].map((item) => (
-                      <li key={item} className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-foreground" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
+              <div className="flex items-end justify-between pt-4">
+                <p className="text-sm text-muted-foreground">Net 30 · Bank transfer accepted</p>
+                <div className="text-right">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Total due</p>
+                  <p className="font-heading font-black text-4xl">$4,360</p>
                 </div>
               </div>
             </div>
           </div>
+
+          <p className="text-sm text-muted-foreground mt-8 text-center">
+            Your client sees this when you share the invoice link. Clean, simple, ready to pay.
+          </p>
         </div>
       </section>
 
-      {/* STATS - 2-column break */}
-      <section className="border-b border-border px-6 py-24 md:py-32">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24">
-            <div className="space-y-4">
-              <p className="text-4xl md:text-5xl font-heading font-black leading-tight">
-                Know exactly
-                <br />
-                what's owed.
-              </p>
-              <p className="text-muted-foreground leading-relaxed max-w-sm">
-                Dashboard shows earned, outstanding, overdue. Sorted by client. Sorted by project. See which invoices are dragging.
-              </p>
+      {/* HOW IT WORKS */}
+      <section className="border-b border-border px-6 py-32 md:py-48">
+        <div className="mx-auto max-w-6xl">
+          <h2 className="font-heading font-black text-5xl md:text-6xl leading-tight tracking-tight mb-16">
+            The flow
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24">
+            <div className="space-y-12">
+              {[
+                { n: '1', title: 'Add clients', desc: 'Name, email, address. Your whole roster in one place.' },
+                { n: '2', title: 'Create projects', desc: 'Set a name and hourly rate for the work.' }
+              ].map(({ n, title, desc }) => (
+                <div key={n} className="flex gap-6">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-border bg-muted/30">
+                    <span className="font-heading font-black text-lg">{n}</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-2">{title}</h3>
+                    <p className="text-muted-foreground">{desc}</p>
+                  </div>
+                </div>
+              ))}
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-12">
               {[
-                { label: 'Total earned', value: '$48,920' },
-                { label: 'Outstanding', value: '$4,360' },
-                { label: 'Overdue 30+ days', value: '$800' },
-                { label: 'Active projects', value: '6' }
-              ].map(({ label, value }) => (
-                <div key={label} className="flex items-end justify-between border-b border-border/50 pb-4">
-                  <span className="text-sm text-muted-foreground">{label}</span>
-                  <span className="font-heading font-black text-2xl">{value}</span>
+                { n: '3', title: 'Log hours daily', desc: 'Track time against any project. Takes 30 seconds.' },
+                { n: '4', title: 'Share invoice', desc: 'Copy the link. Send it. They view and pay immediately.' }
+              ].map(({ n, title, desc }) => (
+                <div key={n} className="flex gap-6">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-border bg-muted/30">
+                    <span className="font-heading font-black text-lg">{n}</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-2">{title}</h3>
+                    <p className="text-muted-foreground">{desc}</p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -225,52 +159,54 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="px-6 py-32 md:py-48">
-        <div className="mx-auto max-w-5xl text-center space-y-8">
-          <h2 className="font-heading font-black text-5xl md:text-6xl leading-tight tracking-tight">
-            Stop leaving money on the table.
+      {/* STATS */}
+      <section className="border-b border-border px-6 py-32 md:py-48">
+        <div className="mx-auto max-w-6xl">
+          <h2 className="font-heading font-black text-5xl md:text-6xl leading-tight tracking-tight mb-16">
+            Know exactly what's owed.
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Track time. Generate invoices. Share links. Get paid. All in one place, in under 2 minutes to set up.
-          </p>
-          <Button asChild size="lg" className="group">
-            <Link href="/login">
-              Start free
-              <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
-            </Link>
-          </Button>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { label: 'Total earned', value: '$48,920' },
+              { label: 'Outstanding invoices', value: '$4,360' },
+              { label: 'Overdue (30+ days)', value: '$800' },
+              { label: 'Active clients', value: '11' }
+            ].map(({ label, value }) => (
+              <div key={label} className="border border-border rounded-lg p-6">
+                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-3">{label}</p>
+                <p className="font-heading font-black text-3xl">{value}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* FOOTER - Minimal but designed */}
+      {/* CTA */}
+      <section className="px-6 py-32 md:py-48">
+        <div className="mx-auto max-w-3xl text-center space-y-8">
+          <h2 className="font-heading font-black text-5xl md:text-6xl leading-tight tracking-tight">
+            Your clients owe you.
+          </h2>
+          <p className="text-xl text-muted-foreground">
+            Start invoicing in minutes. Track who owes what. Get paid.
+          </p>
+          <div>
+            <Button asChild size="lg">
+              <Link href="/login">Start free</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
       <footer className="border-t border-border px-6 py-16">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12 pb-12 border-b border-border">
-            <div>
-              <p className="text-xs uppercase text-muted-foreground mb-3">Product</p>
-              <Link href="/login" className="text-sm hover:text-foreground transition-colors text-muted-foreground">Get started</Link>
-            </div>
-            <div>
-              <p className="text-xs uppercase text-muted-foreground mb-3">Company</p>
-              <Link href="/login" className="text-sm hover:text-foreground transition-colors text-muted-foreground">Sign in</Link>
-            </div>
-            <div>
-              <p className="text-xs uppercase text-muted-foreground mb-3">Built by</p>
-              <p className="text-sm text-muted-foreground">@shrvan</p>
-            </div>
-            <div>
-              <p className="text-xs uppercase text-muted-foreground mb-3">Status</p>
-              <p className="text-sm text-muted-foreground">Live & free</p>
-            </div>
+        <div className="mx-auto max-w-6xl flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <IconLogo size={20} className="text-foreground" />
+            <span className="font-heading font-bold">bagdaddy</span>
           </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <IconLogo size={18} className="text-muted-foreground" />
-              <span className="font-heading font-bold">bagdaddy</span>
-            </div>
-            <p className="text-xs text-muted-foreground">© {new Date().getFullYear()}</p>
-          </div>
+          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} · Made for freelancers</p>
         </div>
       </footer>
     </div>

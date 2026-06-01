@@ -53,12 +53,11 @@ export function SettingsContent() {
   async function handleSave() {
     if (!name.trim() || name.trim() === user?.name) return;
     setIsSaving(true);
-    const supabase = createClient();
-    await supabase.auth.updateUser({ data: { full_name: name.trim() } });
-    const { data } = await supabase.auth.getUser();
-    if (data.user) {
-      const updated = data.user.user_metadata?.full_name ?? name.trim();
-      setUser((prev) => (prev ? { ...prev, name: updated } : prev));
+    try {
+      await trpc.users.updateProfile.mutate({ name: name.trim() });
+      setUser((prev) => (prev ? { ...prev, name: name.trim() } : prev));
+    } catch (err) {
+      console.error(err);
     }
     setIsSaving(false);
   }
