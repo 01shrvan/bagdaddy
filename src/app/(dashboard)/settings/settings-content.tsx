@@ -26,9 +26,9 @@ export function SettingsContent() {
   const updateProfile = useMutation(
     trpc.users.updateProfile.mutationOptions({
       onSuccess: async () => {
-        setUser((prev) => (prev ? { ...prev, name: name.trim() } : prev));
         const supabase = createClient();
-        await supabase.auth.refreshSession();
+        await supabase.auth.updateUser({ data: { full_name: name.trim() } });
+        setUser((prev) => (prev ? { ...prev, name: name.trim() } : prev));
       },
     }),
   );

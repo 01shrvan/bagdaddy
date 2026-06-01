@@ -11,12 +11,9 @@ export const usersRouter = router({
     .input(z.object({ name: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
       await db
-        .update(users)
-        .set({ name: input.name })
-        .where(eq(users.id, ctx.user.id));
-
-      const admin = createAdminClient();
-      await admin.auth.admin.updateUserById(ctx.user.id, { user_metadata: { full_name: input.name } });
+        .insert(users)
+        .values({ id: ctx.user.id, email: ctx.user.email ?? "", name: input.name })
+        .onConflictDoUpdate({ target: users.id, set: { name: input.name } });
 
       return { success: true };
     }),

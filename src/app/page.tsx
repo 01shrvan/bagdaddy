@@ -182,20 +182,34 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* oversized clipped wordmark */}
-        <p
-          aria-hidden
-          className="select-none whitespace-nowrap font-heading font-extrabold leading-none tracking-tighter text-transparent"
-          style={{
-            fontSize: "clamp(120px, 26vw, 380px)",
-            WebkitTextStroke: "1.5px var(--background)",
-            marginTop: "-0.1em",
-            marginBottom: "-0.22em",
-            opacity: 0.25,
-          }}
-        >
-          bagdaddy
-        </p>
+        {/* oversized responsive wordmark — scales to width, always fully visible */}
+        <div className="relative mx-auto max-w-6xl px-6 pb-4">
+          <svg
+            viewBox="0 0 1200 230"
+            preserveAspectRatio="xMidYMid meet"
+            className="block w-full"
+            aria-hidden
+          >
+            <text
+              x="600"
+              y="185"
+              textAnchor="middle"
+              textLength="1180"
+              lengthAdjust="spacingAndGlyphs"
+              style={{
+                fontFamily: "var(--font-heading)",
+                fontWeight: 800,
+                fontSize: "230px",
+                fill: "none",
+                stroke: "var(--background)",
+                strokeWidth: 2,
+                opacity: 0.4,
+              }}
+            >
+              bagdaddy
+            </text>
+          </svg>
+        </div>
       </section>
 
       {/* FOOTER */}
