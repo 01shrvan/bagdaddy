@@ -10,16 +10,15 @@ export const usersRouter = router({
   updateProfile: protectedProcedure
     .input(z.object({ name: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
-      const [updated] = await db
+      await db
         .update(users)
-        .set({ displayName: input.name })
-        .where(eq(users.id, ctx.user.id))
-        .returning();
+        .set({ name: input.name })
+        .where(eq(users.id, ctx.user.id));
 
       const admin = createAdminClient();
       await admin.auth.admin.updateUserById(ctx.user.id, { user_metadata: { full_name: input.name } });
 
-      return updated;
+      return { success: true };
     }),
 
   deleteAccount: protectedProcedure.mutation(async ({ ctx }) => {
