@@ -18,6 +18,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { useProjectSheetParams } from "@/hooks/sheets/use-project-sheet";
 import { Container } from "@/components/container";
+import { EmptyState } from "@/components/empty-state";
 import { toast } from "sonner";
 
 const STATUS_LABELS = { ACTIVE: "Active", COMPLETED: "Completed", ARCHIVED: "Archived" } as const;
@@ -67,18 +68,13 @@ export function ProjectsView() {
             ))}
           </div>
         ) : !rows?.length ? (
-          <div className="flex flex-col items-center justify-center border py-24 gap-4">
-            <div className="flex h-10 w-10 items-center justify-center border">
-              <HugeiconsIcon icon={FolderOpenIcon} size={18} strokeWidth={1.5} className="text-muted-foreground" />
-            </div>
-            <div className="text-center space-y-1">
-              <p className="text-sm font-medium">No projects yet</p>
-              <p className="text-xs text-muted-foreground">Create a project and start tracking time.</p>
-            </div>
-            <Button size="sm" variant="outline" onClick={() => setParams({ projectCreate: true })}>
-              New project
-            </Button>
-          </div>
+          <EmptyState
+            icon={FolderOpenIcon}
+            title="No projects yet"
+            description="Create a project and start tracking time."
+            actionLabel="New project"
+            onAction={() => setParams({ projectCreate: true })}
+          />
         ) : (
           <div className="border">
             <Table>

@@ -17,6 +17,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { AddInvoiceIcon, MoreHorizontalIcon, Delete01Icon, InvoiceIcon, Link01Icon, ArrowUpRightIcon, PencilEdit01Icon } from "@hugeicons/core-free-icons";
 import { useInvoiceSheetParams } from "@/hooks/sheets/use-invoice-sheet";
 import { Container } from "@/components/container";
+import { EmptyState } from "@/components/empty-state";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -89,18 +90,13 @@ export function InvoicesView() {
             ))}
           </div>
         ) : !rows?.length ? (
-          <div className="flex flex-col items-center justify-center border py-24 gap-4">
-            <div className="flex h-10 w-10 items-center justify-center border">
-              <HugeiconsIcon icon={InvoiceIcon} size={18} strokeWidth={1.5} className="text-muted-foreground" />
-            </div>
-            <div className="text-center space-y-1">
-              <p className="text-sm font-medium">No invoices yet</p>
-              <p className="text-xs text-muted-foreground">Create your first invoice and send it to a client.</p>
-            </div>
-            <Button size="sm" variant="outline" onClick={() => router.push("/invoices/new")}>
-              New invoice
-            </Button>
-          </div>
+          <EmptyState
+            icon={InvoiceIcon}
+            title="No invoices yet"
+            description="Create your first invoice and send it to a client."
+            actionLabel="New invoice"
+            onAction={() => router.push("/invoices/new")}
+          />
         ) : (
           <div className="border">
             <Table>

@@ -9,6 +9,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { ClockAddIcon, Delete01Icon, Clock01Icon, PencilEdit01Icon } from "@hugeicons/core-free-icons";
 import { useTimeSheetParams } from "@/hooks/sheets/use-time-sheet";
 import { Container } from "@/components/container";
+import { EmptyState } from "@/components/empty-state";
 
 export function TimeView() {
   const trpc = useTRPC();
@@ -42,18 +43,13 @@ export function TimeView() {
             ))}
           </div>
         ) : !entries?.length ? (
-          <div className="flex flex-col items-center justify-center border py-24 gap-4">
-            <div className="flex h-10 w-10 items-center justify-center border">
-              <HugeiconsIcon icon={Clock01Icon} size={18} strokeWidth={1.5} className="text-muted-foreground" />
-            </div>
-            <div className="text-center space-y-1">
-              <p className="text-sm font-medium">No time entries yet</p>
-              <p className="text-xs text-muted-foreground">Start logging hours against your projects.</p>
-            </div>
-            <Button size="sm" variant="outline" onClick={() => setParams({ timeCreate: true })}>
-              Log time
-            </Button>
-          </div>
+          <EmptyState
+            icon={Clock01Icon}
+            title="No time entries yet"
+            description="Start logging hours against your projects."
+            actionLabel="Log time"
+            onAction={() => setParams({ timeCreate: true })}
+          />
         ) : (
           <div className="border">
             <Table>

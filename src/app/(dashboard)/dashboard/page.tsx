@@ -5,16 +5,20 @@ import { Stats, StatsSkeleton } from "./stats";
 import { Container } from "@/components/container";
 import { RecentInvoices, RecentInvoicesSkeleton } from "./recent-invoices";
 import { ActiveProjects, ActiveProjectsSkeleton } from "./active-projects";
+import { ShaderPanel } from "@/components/shader-panel";
 
 export default function DashboardPage() {
   return (
     <Container>
       <main className="space-y-8">
-        <section className="space-y-1">
-          <h1 className="font-semibold text-3xl tracking-tight">Overview</h1>
-          <p className="text-muted-foreground text-sm">
-            A snapshot of your freelance business — earnings, projects, and clients.
-          </p>
+        <section className="relative overflow-hidden border px-6 py-8">
+          <ShaderPanel variant="warp" opacity={0.4} />
+          <div className="relative z-10 space-y-1">
+            <h1 className="font-semibold text-3xl tracking-tight">Overview</h1>
+            <p className="text-muted-foreground text-sm">
+              A snapshot of your freelance business — earnings, projects, and clients.
+            </p>
+          </div>
         </section>
 
         <Suspense fallback={<StatsSkeleton />}>

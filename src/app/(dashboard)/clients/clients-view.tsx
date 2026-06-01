@@ -11,6 +11,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { UserAdd01Icon, MoreHorizontalIcon, Edit01Icon, Delete01Icon, UserGroupIcon } from "@hugeicons/core-free-icons";
 import { useClientSheetParams } from "@/hooks/sheets/use-client-sheet";
 import { Container } from "@/components/container";
+import { EmptyState } from "@/components/empty-state";
 
 export function ClientsView() {
   const trpc = useTRPC();
@@ -40,18 +41,13 @@ export function ClientsView() {
             ))}
           </div>
         ) : !clientsList?.length ? (
-          <div className="flex flex-col items-center justify-center border py-24 gap-4">
-            <div className="flex h-10 w-10 items-center justify-center border">
-              <HugeiconsIcon icon={UserGroupIcon} size={18} strokeWidth={1.5} className="text-muted-foreground" />
-            </div>
-            <div className="text-center space-y-1">
-              <p className="text-sm font-medium">No clients yet</p>
-              <p className="text-xs text-muted-foreground">Add your first client to get started.</p>
-            </div>
-            <Button size="sm" variant="outline" onClick={() => setParams({ clientCreate: true })}>
-              Add client
-            </Button>
-          </div>
+          <EmptyState
+            icon={UserGroupIcon}
+            title="No clients yet"
+            description="Add your first client to get started."
+            actionLabel="Add client"
+            onAction={() => setParams({ clientCreate: true })}
+          />
         ) : (
           <div className="border">
             <Table>
