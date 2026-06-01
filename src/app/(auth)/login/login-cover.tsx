@@ -1,18 +1,15 @@
 "use client";
 
-import { LiquidMetal, liquidMetalPresets } from "@paper-design/shaders-react";
+import { Warp, warpPresets } from "@paper-design/shaders-react";
 
-const noir =
-  liquidMetalPresets.find((p) => p.name.toLowerCase() === "noir") ??
-  liquidMetalPresets[0];
+const base = warpPresets[0];
 
 export function LoginCover() {
   return (
-    <LiquidMetal
-      {...noir.params}
-      image="/crown.svg"
-      fit="contain"
-      scale={0.62}
+    <Warp
+      {...base.params}
+      colors={["#0e0e10", "#18181b", "#2a2a30", "#46464f"]}
+      speed={0.5}
       style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
     />
   );
