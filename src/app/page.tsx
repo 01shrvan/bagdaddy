@@ -6,13 +6,6 @@ import { Button } from "@/components/ui/button";
 import { IconLogo } from "@/components/icons";
 import { LandingNav } from "@/components/landing/nav";
 
-const DOT_GRID = {
-  backgroundImage: "radial-gradient(var(--border) 1px, transparent 1px)",
-  backgroundSize: "22px 22px",
-  maskImage: "radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%)",
-  WebkitMaskImage: "radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%)",
-};
-
 const FADE_BOTTOM = {
   maskImage: "linear-gradient(to bottom, black 55%, transparent 95%)",
   WebkitMaskImage: "linear-gradient(to bottom, black 55%, transparent 95%)",
@@ -27,42 +20,64 @@ export default async function Home() {
     <div className="min-h-screen bg-background text-foreground">
       <LandingNav />
 
-      {/* HERO */}
       <section className="relative overflow-hidden border-b border-border">
-        <div aria-hidden className="pointer-events-none absolute inset-0" style={DOT_GRID} />
-
-        <div className="relative mx-auto max-w-6xl px-6 pt-28 pb-0 md:pt-40">
-          <div className="mx-auto max-w-3xl text-center">
-            <div className="mb-7 inline-flex items-center gap-2 border border-border bg-card px-3.5 py-1.5">
-              <span className="relative flex size-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-foreground opacity-60" />
-                <span className="relative inline-flex size-1.5 rounded-full bg-foreground" />
-              </span>
-              <span className="text-xs tracking-wide text-muted-foreground">Free while in beta</span>
+        <div className="relative mx-auto max-w-6xl px-6 pt-24 md:pt-36">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+            <div>
+              <p className="mb-5 font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground">
+                Freelance invoicing
+              </p>
+              <h1 className="font-heading text-5xl font-extrabold leading-[0.9] tracking-tight md:text-6xl lg:text-7xl">
+                Get paid for
+                <br />
+                every hour
+                <br />
+                you work.
+              </h1>
+              <p className="mt-7 max-w-md text-lg leading-relaxed text-muted-foreground">
+                bagdaddy turns logged hours into invoices, sends them as a link,
+                and tracks who still owes you — so nothing slips through.
+              </p>
+              <div className="mt-9 flex flex-wrap items-center gap-3">
+                <Button asChild size="lg" className="h-12 px-8 text-base">
+                  <Link href="/login">Start free</Link>
+                </Button>
+                <Button asChild variant="outline" size="lg" className="h-12 px-8 text-base">
+                  <a href="#how">See how it works</a>
+                </Button>
+              </div>
+              <p className="mt-5 text-sm text-muted-foreground">
+                No card. No password. Just your email.
+              </p>
             </div>
 
-            <h1 className="font-heading text-5xl font-extrabold leading-[0.95] tracking-tight md:text-7xl">
-              Get paid for
-              <br />
-              every hour you work.
-            </h1>
-
-            <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              bagdaddy turns logged hours into invoices, sends them as a link,
-              and tracks who still owes you — so nothing slips through.
-            </p>
-
-            <div className="mt-9 flex items-center justify-center gap-3">
-              <Button asChild size="lg" className="h-11 px-7">
-                <Link href="/login">Start free</Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="h-11 px-7">
-                <a href="#how">See how</a>
-              </Button>
+            <div className="hidden lg:block">
+              <div className="border border-border bg-card p-6 shadow-2xl">
+                <p className="mb-4 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                  This quarter
+                </p>
+                <p className="font-heading text-5xl font-extrabold tracking-tight">$48,920</p>
+                <p className="mt-1 text-sm text-muted-foreground">earned across 11 clients</p>
+                <div className="mt-6 space-y-3 border-t border-border pt-5">
+                  {[
+                    ["Outstanding", "$4,360", "60%"],
+                    ["Overdue", "$800", "20%"],
+                  ].map(([label, value, w]) => (
+                    <div key={label}>
+                      <div className="mb-1.5 flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">{label}</span>
+                        <span className="font-mono font-medium">{value}</span>
+                      </div>
+                      <div className="h-1 w-full bg-muted">
+                        <div className="h-full bg-foreground" style={{ width: w }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* TILTED DASHBOARD MOCKUP */}
           <div className="mt-20" style={{ perspective: "2200px" }}>
             <div
               className="origin-top transform-gpu border border-border bg-card shadow-2xl"
@@ -74,23 +89,29 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* FEATURES — each card holds a live mini-mockup */}
       <section id="how" className="border-b border-border px-6 py-24 md:py-32">
         <div className="mx-auto max-w-6xl">
           <div className="mb-14 max-w-2xl">
-            <p className="mb-4 text-sm uppercase tracking-widest text-muted-foreground">How it works</p>
+            <p className="mb-4 text-sm uppercase tracking-widest text-muted-foreground">
+              How it works
+            </p>
             <h2 className="font-heading text-4xl font-extrabold leading-tight tracking-tight md:text-5xl">
               Three steps. No spreadsheet.
             </h2>
           </div>
 
           <div className="grid grid-cols-1 gap-px overflow-hidden border border-border bg-border lg:grid-cols-3">
-            {/* CARD 1 — hours -> invoice */}
             <article className="bg-card p-7">
               <div className="mb-7 border border-border bg-background p-5">
-                <p className="mb-3 text-[10px] uppercase tracking-widest text-muted-foreground">Time logged</p>
+                <p className="mb-3 text-[10px] uppercase tracking-widest text-muted-foreground">
+                  Time logged
+                </p>
                 <div className="space-y-2 font-mono text-xs">
-                  {[["Mon", "6h", "Redesign"], ["Tue", "4h", "Redesign"], ["Wed", "5h", "Redesign"]].map(([d, h, p]) => (
+                  {[
+                    ["Mon", "6h", "Redesign"],
+                    ["Tue", "4h", "Redesign"],
+                    ["Wed", "5h", "Redesign"],
+                  ].map(([d, h, p]) => (
                     <div key={d} className="flex items-center justify-between text-muted-foreground">
                       <span>{d}</span>
                       <span>{p}</span>
@@ -99,43 +120,57 @@ export default async function Home() {
                   ))}
                 </div>
                 <div className="my-3 flex items-center justify-center">
-                  <span className="border border-border px-2 py-0.5 text-[10px] uppercase tracking-widest text-muted-foreground">converts to ↓</span>
+                  <span className="border border-border px-2 py-0.5 text-[10px] uppercase tracking-widest text-muted-foreground">
+                    converts to ↓
+                  </span>
                 </div>
                 <div className="flex items-center justify-between border-t border-border pt-3 text-xs">
                   <span>Redesign · 15h</span>
                   <span className="font-mono font-semibold">$1,275</span>
                 </div>
               </div>
-              <h3 className="mb-2 font-heading text-lg font-bold tracking-tight">Hours become invoices</h3>
+              <h3 className="mb-2 font-heading text-lg font-bold tracking-tight">
+                Hours become invoices
+              </h3>
               <p className="text-sm leading-relaxed text-muted-foreground">
-                Log time against a project. One click turns those hours into invoice line items at your rate.
+                Log time against a project. One click turns those hours into
+                invoice line items at your rate.
               </p>
             </article>
 
-            {/* CARD 2 — public link */}
             <article className="bg-card p-7">
               <div className="mb-7 border border-border bg-background p-5">
                 <div className="mb-3 flex items-center justify-between">
                   <span className="font-mono text-xs font-semibold">INV-0042</span>
-                  <span className="border border-foreground/30 bg-foreground px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-background">Paid</span>
+                  <span className="border border-foreground/30 bg-foreground px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-background">
+                    Paid
+                  </span>
                 </div>
                 <p className="font-heading text-3xl font-extrabold tracking-tight">$2,400</p>
                 <p className="mb-4 text-xs text-muted-foreground">Studio Collective · due Jun 15</p>
                 <div className="flex items-center gap-2 border border-border bg-card px-3 py-2">
-                  <span className="truncate font-mono text-[11px] text-muted-foreground">bagdaddy.app/i/x7k2qa</span>
-                  <span className="ml-auto shrink-0 border border-border px-1.5 py-0.5 text-[10px] uppercase tracking-wider">Copy</span>
+                  <span className="truncate font-mono text-[11px] text-muted-foreground">
+                    bagdaddy.app/i/x7k2qa
+                  </span>
+                  <span className="ml-auto shrink-0 border border-border px-1.5 py-0.5 text-[10px] uppercase tracking-wider">
+                    Copy
+                  </span>
                 </div>
               </div>
-              <h3 className="mb-2 font-heading text-lg font-bold tracking-tight">Send a link, get paid</h3>
+              <h3 className="mb-2 font-heading text-lg font-bold tracking-tight">
+                Send a link, get paid
+              </h3>
               <p className="text-sm leading-relaxed text-muted-foreground">
-                Every invoice gets a public page. Copy the link, send it — your client views and pays. No account needed.
+                Every invoice gets a public page. Copy the link, send it — your
+                client views and pays. No account needed.
               </p>
             </article>
 
-            {/* CARD 3 — dashboard / overdue */}
             <article className="bg-card p-7">
               <div className="mb-7 border border-border bg-background p-5">
-                <p className="mb-3 text-[10px] uppercase tracking-widest text-muted-foreground">This quarter</p>
+                <p className="mb-3 text-[10px] uppercase tracking-widest text-muted-foreground">
+                  This quarter
+                </p>
                 <div className="space-y-3">
                   {[
                     ["Earned", "$48,920", false],
@@ -155,16 +190,18 @@ export default async function Home() {
                   Overdue flagged automatically
                 </p>
               </div>
-              <h3 className="mb-2 font-heading text-lg font-bold tracking-tight">Never chase again</h3>
+              <h3 className="mb-2 font-heading text-lg font-bold tracking-tight">
+                Never chase again
+              </h3>
               <p className="text-sm leading-relaxed text-muted-foreground">
-                The dashboard shows what's earned, outstanding, and overdue. Late invoices flag themselves.
+                The dashboard shows what's earned, outstanding, and overdue. Late
+                invoices flag themselves.
               </p>
             </article>
           </div>
         </div>
       </section>
 
-      {/* GIANT BRAND CTA */}
       <section className="relative overflow-hidden bg-foreground text-background">
         <div className="relative z-10 mx-auto max-w-6xl px-6 pt-24 pb-10 md:pt-32">
           <h2 className="font-heading text-4xl font-extrabold leading-tight tracking-tight md:text-6xl">
@@ -182,7 +219,6 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* oversized responsive wordmark — scales to width, always fully visible */}
         <div className="relative mx-auto max-w-6xl px-6 pb-4">
           <svg
             viewBox="0 0 1200 230"
@@ -212,7 +248,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* FOOTER */}
       <footer className="border-t border-border px-6 py-10">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 sm:flex-row">
           <div className="flex items-center gap-2">
@@ -229,7 +264,6 @@ export default async function Home() {
 function DashboardMockup() {
   return (
     <div className="grid grid-cols-1 text-left sm:grid-cols-[170px_1fr]">
-      {/* sidebar */}
       <aside className="hidden border-r border-border p-4 sm:block">
         <div className="mb-6 flex items-center gap-2">
           <IconLogo size={16} className="text-foreground" />
@@ -247,7 +281,6 @@ function DashboardMockup() {
         </nav>
       </aside>
 
-      {/* main */}
       <div className="min-w-0 p-4 sm:p-6 md:p-8">
         <div className="mb-5 flex items-end justify-between gap-3">
           <div className="min-w-0">
