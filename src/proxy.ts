@@ -14,29 +14,45 @@ export async function proxy(request: NextRequest) {
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
+            request.cookies.set(name, value),
           );
           supabaseResponse = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            supabaseResponse.cookies.set(name, value, options),
           );
         },
       },
-    }
+    },
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!user && request.nextUrl.pathname.startsWith("/dashboard")) {
+  const { pathname } = request.nextUrl;
+  const isProtected = PROTECTED_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`),
+  );
+
+  if (!user && isProtected) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (user && (request.nextUrl.pathname === "/login" || request.nextUrl.pathname === "/")) {
+  if (user && (pathname === "/login" || pathname === "/")) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   return supabaseResponse;
 }
+
+const PROTECTED_ROUTES = [
+  "/dashboard",
+  "/clients",
+  "/projects",
+  "/time",
+  "/invoices",
+  "/settings",
+];
 
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico|public).*)"],
