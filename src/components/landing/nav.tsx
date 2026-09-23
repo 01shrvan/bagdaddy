@@ -4,14 +4,16 @@ import { IconLogo } from "@/components/icons";
 
 export function LandingNav() {
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
+    <header className="border-b border-border">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-2.5">
-          <IconLogo size={20} className="text-foreground" />
-          <span className="font-heading text-base font-bold">bagdaddy</span>
+          <IconLogo size={18} className="text-foreground" />
+          <span className="font-heading text-sm font-bold tracking-tight">
+            bagdaddy
+          </span>
         </Link>
-        <Button asChild size="sm">
-          <Link href="/login">Get started</Link>
+        <Button asChild size="sm" className="h-9 rounded-none px-4">
+          <Link href="/login">Start free</Link>
         </Button>
       </div>
     </header>
