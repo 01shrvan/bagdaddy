@@ -5,16 +5,24 @@ import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { redirect } from "next/navigation";
 
-export async function sendOtp(email: string) {
+export type SendOtpResult = { ok: true } | { ok: false; error: string };
+
+export async function sendOtp(email: string): Promise<SendOtpResult> {
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithOtp({
     email,
     options: { shouldCreateUser: true },
   });
-  if (error) throw new Error(error.message);
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
 }
 
-export async function verifyOtp(email: string, token: string) {
+export type VerifyOtpResult = { ok: true } | { ok: false; error: string };
+
+export async function verifyOtp(
+  email: string,
+  token: string
+): Promise<VerifyOtpResult> {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.verifyOtp({
     email,
@@ -22,7 +30,8 @@ export async function verifyOtp(email: string, token: string) {
     type: "email",
   });
 
-  if (error || !data.user) throw new Error(error?.message ?? "Invalid code");
+  if (error || !data.user)
+    return { ok: false, error: error?.message ?? "Invalid code" };
 
   await db
     .insert(users)

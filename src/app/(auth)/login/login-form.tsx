@@ -19,12 +19,12 @@ export function LoginForm() {
     e.preventDefault();
     setError("");
     startTransition(async () => {
-      try {
-        await sendOtp(email);
-        setStep("otp");
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Something went wrong");
+      const res = await sendOtp(email);
+      if (!res.ok) {
+        setError(res.error);
+        return;
       }
+      setStep("otp");
     });
   }
 
@@ -32,10 +32,10 @@ export function LoginForm() {
     e.preventDefault();
     setError("");
     startTransition(async () => {
-      try {
-        await verifyOtp(email, otp);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Invalid code");
+      const res = await verifyOtp(email, otp);
+      if (!res.ok) {
+        setError(res.error);
+        return;
       }
     });
   }
