@@ -240,7 +240,7 @@ export function InvoiceEditor({
                     type="date"
                     value={dueDate}
                     onChange={(e) => setDueDate(e.target.value)}
-                    style={{ ...inputBase }}
+                    style={{ ...inputBase, colorScheme: "light" }}
                   />
                 </Field>
               </div>
