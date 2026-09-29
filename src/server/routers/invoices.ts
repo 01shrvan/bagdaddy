@@ -52,8 +52,13 @@ export const invoicesRouter = router({
         return sum + parseFloat(item.quantity) * parseFloat(item.unitPrice);
       }, 0);
 
-      const count = await db.select({ id: invoices.id }).from(invoices).where(eq(invoices.userId, ctx.user.id));
-      const invoiceNumber = `INV-${String(count.length + 1).padStart(4, "0")}`;
+      const [lastInvoice] = await db
+        .select({ invoiceNumber: invoices.invoiceNumber })
+        .from(invoices)
+        .orderBy(desc(invoices.invoiceNumber))
+        .limit(1);
+      const lastNum = lastInvoice?.invoiceNumber ? parseInt(lastInvoice.invoiceNumber.replace("INV-", ""), 10) : 0;
+      const invoiceNumber = `INV-${String((isNaN(lastNum) ? 0 : lastNum) + 1).padStart(4, "0")}`;
       const publicToken = createId();
 
       const [invoice] = await db
