@@ -19,11 +19,15 @@ export const usersRouter = router({
     }),
 
   deleteAccount: protectedProcedure.mutation(async ({ ctx }) => {
-    await db.delete(users).where(eq(users.id, ctx.user.id));
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      throw new TRPCError({ code: "PRECONDITION_FAILED", message: "Account deletion is not configured on this server" });
+    }
 
     const admin = createAdminClient();
     const { error } = await admin.auth.admin.deleteUser(ctx.user.id);
     if (error) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: error.message });
+
+    await db.delete(users).where(eq(users.id, ctx.user.id));
 
     return { success: true };
   }),

@@ -86,7 +86,8 @@ export const projectsRouter = router({
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const userClients = db.select({ id: clients.id }).from(clients).where(eq(clients.userId, ctx.user.id));
-      await db.update(invoices).set({ projectId: null }).where(eq(invoices.projectId, input.id));
+      await db.update(invoices).set({ projectId: null })
+        .where(and(eq(invoices.projectId, input.id), eq(invoices.userId, ctx.user.id)));
       await db.delete(projects).where(and(eq(projects.id, input.id), inArray(projects.clientId, userClients)));
     }),
 });

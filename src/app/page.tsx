@@ -70,7 +70,7 @@ function StatCard({
       </p>
       {sub ? (
         <p className="mt-1 text-xs text-muted-foreground">
-          hours logged across 11 clients
+          {sub}
         </p>
       ) : null}
     </div>
@@ -101,10 +101,10 @@ function DashboardFrame() {
       </div>
 
       <div className="grid grid-cols-2 border-b border-border sm:grid-cols-4">
-        <StatCard label="Total earned" value="$48,920" sub hero />
-        <StatCard label="Outstanding" value="$4,360" sub />
-        <StatCard label="Overdue" value="$800" sub />
-        <StatCard label="Active projects" value="6" sub />
+        <StatCard label="Total earned" value="$48,920" sub="hours logged across 11 clients" hero />
+        <StatCard label="Outstanding" value="$4,360" sub="awaiting payment" />
+        <StatCard label="Overdue" value="$800" sub="past due date" />
+        <StatCard label="Active projects" value="6" sub="across 4 clients" />
       </div>
 
       <div className="border-b border-border px-5 py-3 sm:px-6">

@@ -1,10 +1,38 @@
 import { TRPCError } from "@trpc/server";
 import { router, protectedProcedure } from "@/server/trpc";
 import { db } from "@/lib/db";
-import { invoices, invoiceItems, clients, projects, users } from "@/lib/db/schema";
-import { eq, and, inArray, desc } from "drizzle-orm";
+import { invoices, invoiceItems, clients, projects } from "@/lib/db/schema";
+import { eq, and, desc } from "drizzle-orm";
 import { z } from "zod/v4";
 import { createId } from "@paralleldrive/cuid2";
+
+const QUANTITY_RE = /^\d{1,4}(\.\d{1,2})?$/;
+const PRICE_RE = /^\d{1,7}(\.\d{1,2})?$/;
+
+const itemSchema = z.object({
+  description: z.string().trim().min(1),
+  quantity: z.string().trim().regex(QUANTITY_RE, "Quantity must be a number up to 9999.99"),
+  unitPrice: z.string().trim().regex(PRICE_RE, "Unit price must be a number up to 9999999.99"),
+});
+
+const lineTotal = (item: { quantity: string; unitPrice: string }) =>
+  parseFloat(item.quantity) * parseFloat(item.unitPrice);
+
+async function assertOwnership(userId: string, clientId: string, projectId?: string) {
+  const [client] = await db.select({ id: clients.id }).from(clients)
+    .where(and(eq(clients.id, clientId), eq(clients.userId, userId)));
+  if (!client) throw new TRPCError({ code: "NOT_FOUND", message: "Client not found" });
+  if (projectId) {
+    const [project] = await db.select({ id: projects.id }).from(projects)
+      .where(and(eq(projects.id, projectId), eq(projects.clientId, clientId)));
+    if (!project) throw new TRPCError({ code: "NOT_FOUND", message: "Project not found" });
+  }
+}
+
+function isUniqueViolation(err: unknown) {
+  const e = err as { code?: string; cause?: { code?: string } };
+  return e?.code === "23505" || e?.cause?.code === "23505";
+}
 
 export const invoicesRouter = router({
   list: protectedProcedure.query(async ({ ctx }) => {
@@ -24,7 +52,7 @@ export const invoicesRouter = router({
         .from(invoices)
         .innerJoin(clients, eq(invoices.clientId, clients.id))
         .where(and(eq(invoices.id, input.id), eq(invoices.userId, ctx.user.id)));
-      if (!row) throw new Error("Invoice not found");
+      if (!row) throw new TRPCError({ code: "NOT_FOUND", message: "Invoice not found" });
       const items = await db.select().from(invoiceItems).where(eq(invoiceItems.invoiceId, input.id));
       return { ...row, items };
     }),
@@ -36,57 +64,56 @@ export const invoicesRouter = router({
         projectId: z.string().optional(),
         dueDate: z.string().optional(),
         notes: z.string().optional(),
-        items: z
-          .array(
-            z.object({
-              description: z.string().min(1),
-              quantity: z.string(),
-              unitPrice: z.string(),
-            }),
-          )
-          .min(1),
+        items: z.array(itemSchema).min(1),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const total = input.items.reduce((sum, item) => {
-        return sum + parseFloat(item.quantity) * parseFloat(item.unitPrice);
-      }, 0);
+      await assertOwnership(ctx.user.id, input.clientId, input.projectId || undefined);
+      const total = input.items.reduce((sum, item) => sum + lineTotal(item), 0);
 
-      const [lastInvoice] = await db
-        .select({ invoiceNumber: invoices.invoiceNumber })
-        .from(invoices)
-        .orderBy(desc(invoices.invoiceNumber))
-        .limit(1);
-      const lastNum = lastInvoice?.invoiceNumber ? parseInt(lastInvoice.invoiceNumber.replace("INV-", ""), 10) : 0;
-      const invoiceNumber = `INV-${String((isNaN(lastNum) ? 0 : lastNum) + 1).padStart(4, "0")}`;
-      const publicToken = createId();
+      for (let attempt = 0; ; attempt++) {
+        try {
+          return await db.transaction(async (tx) => {
+            const [lastInvoice] = await tx
+              .select({ invoiceNumber: invoices.invoiceNumber })
+              .from(invoices)
+              .orderBy(desc(invoices.invoiceNumber))
+              .limit(1);
+            const lastNum = lastInvoice?.invoiceNumber ? parseInt(lastInvoice.invoiceNumber.replace("INV-", ""), 10) : 0;
+            const invoiceNumber = `INV-${String((isNaN(lastNum) ? 0 : lastNum) + 1 + attempt).padStart(4, "0")}`;
 
-      const [invoice] = await db
-        .insert(invoices)
-        .values({
-          userId: ctx.user.id,
-          clientId: input.clientId,
-          projectId: input.projectId || null,
-          invoiceNumber,
-          publicToken,
-          status: "DRAFT",
-          dueDate: input.dueDate ? new Date(input.dueDate) : null,
-          totalAmount: String(total.toFixed(2)),
-          notes: input.notes || null,
-        })
-        .returning();
+            const [invoice] = await tx
+              .insert(invoices)
+              .values({
+                userId: ctx.user.id,
+                clientId: input.clientId,
+                projectId: input.projectId || null,
+                invoiceNumber,
+                publicToken: createId(),
+                status: "DRAFT",
+                dueDate: input.dueDate ? new Date(input.dueDate) : null,
+                totalAmount: total.toFixed(2),
+                notes: input.notes || null,
+              })
+              .returning();
 
-      await db.insert(invoiceItems).values(
-        input.items.map((item) => ({
-          invoiceId: invoice.id,
-          description: item.description,
-          quantity: item.quantity,
-          unitPrice: item.unitPrice,
-          total: String((parseFloat(item.quantity) * parseFloat(item.unitPrice)).toFixed(2)),
-        })),
-      );
+            await tx.insert(invoiceItems).values(
+              input.items.map((item) => ({
+                invoiceId: invoice.id,
+                description: item.description,
+                quantity: item.quantity,
+                unitPrice: item.unitPrice,
+                total: lineTotal(item).toFixed(2),
+              })),
+            );
 
-      return invoice;
+            return invoice;
+          });
+        } catch (err) {
+          if (attempt < 4 && isUniqueViolation(err)) continue;
+          throw err;
+        }
+      }
     }),
 
   update: protectedProcedure
@@ -97,48 +124,44 @@ export const invoicesRouter = router({
         projectId: z.string().optional(),
         dueDate: z.string().optional(),
         notes: z.string().optional(),
-        items: z.array(
-          z.object({
-            description: z.string().min(1),
-            quantity: z.string(),
-            unitPrice: z.string(),
-          }),
-        ).min(1),
+        items: z.array(itemSchema).min(1),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const total = input.items.reduce((sum, item) => {
-        return sum + parseFloat(item.quantity) * parseFloat(item.unitPrice);
-      }, 0);
+      await assertOwnership(ctx.user.id, input.clientId, input.projectId || undefined);
+      const total = input.items.reduce((sum, item) => sum + lineTotal(item), 0);
 
-      await db.delete(invoiceItems).where(eq(invoiceItems.invoiceId, input.id));
+      return db.transaction(async (tx) => {
+        const [invoice] = await tx
+          .update(invoices)
+          .set({
+            clientId: input.clientId,
+            projectId: input.projectId || null,
+            dueDate: input.dueDate ? new Date(input.dueDate) : null,
+            totalAmount: total.toFixed(2),
+            notes: input.notes || null,
+          })
+          .where(and(eq(invoices.id, input.id), eq(invoices.userId, ctx.user.id)))
+          .returning();
 
-      const [invoice] = await db
-        .update(invoices)
-        .set({
-          clientId: input.clientId,
-          projectId: input.projectId || null,
-          dueDate: input.dueDate ? new Date(input.dueDate) : null,
-          totalAmount: String(total.toFixed(2)),
-          notes: input.notes || null,
-        })
-        .where(and(eq(invoices.id, input.id), eq(invoices.userId, ctx.user.id)))
-        .returning();
+        if (!invoice) throw new TRPCError({ code: "NOT_FOUND", message: "Invoice not found" });
 
-      if (!invoice) throw new TRPCError({ code: "NOT_FOUND" });
+        await tx.delete(invoiceItems).where(eq(invoiceItems.invoiceId, invoice.id));
+        const items = await tx
+          .insert(invoiceItems)
+          .values(
+            input.items.map((item) => ({
+              invoiceId: invoice.id,
+              description: item.description,
+              quantity: item.quantity,
+              unitPrice: item.unitPrice,
+              total: lineTotal(item).toFixed(2),
+            })),
+          )
+          .returning();
 
-      await db.insert(invoiceItems).values(
-        input.items.map((item) => ({
-          invoiceId: invoice.id,
-          description: item.description,
-          quantity: item.quantity,
-          unitPrice: item.unitPrice,
-          total: String((parseFloat(item.quantity) * parseFloat(item.unitPrice)).toFixed(2)),
-        })),
-      );
-
-      const items = await db.select().from(invoiceItems).where(eq(invoiceItems.invoiceId, invoice.id));
-      return { invoice, items };
+        return { invoice, items };
+      });
     }),
 
   updateStatus: protectedProcedure
@@ -158,6 +181,7 @@ export const invoicesRouter = router({
         })
         .where(and(eq(invoices.id, input.id), eq(invoices.userId, ctx.user.id)))
         .returning();
+      if (!invoice) throw new TRPCError({ code: "NOT_FOUND", message: "Invoice not found" });
       return invoice;
     }),
 

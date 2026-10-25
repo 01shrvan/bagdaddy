@@ -49,6 +49,9 @@ export const timeRouter = router({
     .mutation(async ({ ctx, input }) => {
       const userClients = db.select({ id: clients.id }).from(clients).where(eq(clients.userId, ctx.user.id));
       const userProjects = db.select({ id: projects.id }).from(projects).where(inArray(projects.clientId, userClients));
+      const [target] = await db.select({ id: projects.id }).from(projects)
+        .where(and(eq(projects.id, input.projectId), inArray(projects.clientId, userClients)));
+      if (!target) throw new Error("Project not found");
       const [entry] = await db.update(timeEntries)
         .set({
           projectId: input.projectId,

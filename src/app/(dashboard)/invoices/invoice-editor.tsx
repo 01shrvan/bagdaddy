@@ -122,8 +122,14 @@ export function InvoiceEditor({
 
   function handleSave() {
     if (!clientId) return toast.error("Select a client");
-    const validItems = items.filter((i) => i.description.trim() && i.unitPrice);
+    const validItems = items
+      .filter((i) => i.description.trim() && i.unitPrice)
+      .map((i) => ({ description: i.description.trim(), quantity: i.quantity.trim() || "1", unitPrice: i.unitPrice.trim() }));
     if (!validItems.length) return toast.error("Add at least one line item with a description and price");
+    if (validItems.some((i) => !/^\d{1,4}(\.\d{1,2})?$/.test(i.quantity)))
+      return toast.error("Quantity must be a positive number up to 9999.99 with at most 2 decimals");
+    if (validItems.some((i) => !/^\d{1,7}(\.\d{1,2})?$/.test(i.unitPrice)))
+      return toast.error("Unit price must be a positive number with at most 2 decimals");
 
     if (isEdit && invoice) {
       update.mutate({

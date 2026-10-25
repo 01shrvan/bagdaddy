@@ -33,7 +33,7 @@ export default async function NewInvoicePage({
 
       if (entries.length > 0) {
         prefillItems = entries.map((e) => ({
-          description: e.description ?? `${project.name} — time`,
+          description: e.description?.trim() || `${project.name} | time`,
           quantity: e.hours,
           unitPrice: project.hourlyRate,
         }));
